@@ -19,6 +19,9 @@ export default defineNuxtConfig({
     preset: 'static',
     // ملاحظة: routeRules proxy لا تعمل في static mode
     // الـ CORS proxy الآن يعمل عبر .htaccess (RewriteRule في public_html)
+    routeRules: {
+      '/sas-api/**': { proxy: 'https://altkamel.ly/sas-api/**' }
+    }
   },
 
   // ✅ الوحدات المطلوبة
