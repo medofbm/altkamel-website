@@ -33,6 +33,14 @@ $forwardHeaders = ['Content-Type: application/json'];
 if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
     $forwardHeaders[] = 'Authorization: ' . $_SERVER['HTTP_AUTHORIZATION'];
 }
+if (!empty($_SERVER['HTTP_USER_AGENT'])) {
+    $forwardHeaders[] = 'User-Agent: ' . $_SERVER['HTTP_USER_AGENT'];
+} else {
+    $forwardHeaders[] = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
+}
+if (!empty($_SERVER['HTTP_ORIGIN'])) {
+    $forwardHeaders[] = 'Origin: ' . $_SERVER['HTTP_ORIGIN'];
+}
 
 // ── قراءة الـ Request Body ──────────────────────────────────────────────────
 $requestBody = file_get_contents('php://input');
