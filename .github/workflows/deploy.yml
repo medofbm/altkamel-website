@@ -23,9 +23,6 @@ jobs:
     - name: 🚀 Build Nuxt Project
       run: npm run generate
 
-    - name: 🗑️ Remove large SVG to prevent FTP timeout
-      run: rm -f .output/public/images/about/tripoli_blueprint_20260420_163632.svg
-
     - name: 📂 Sync files to cPanel
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
@@ -39,3 +36,4 @@ jobs:
           **/.git*/**
           **/node_modules/**
           **/.ftp-deploy-sync-state.json
+          images/**
