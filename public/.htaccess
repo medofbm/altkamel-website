@@ -26,8 +26,8 @@ RewriteRule ^_nuxt/         -   [L,NC]
 RewriteRule ^images/        -   [L,NC]
 RewriteRule ^fonts/         -   [L,NC]
 
-# ── بروكسي لطلبات الـ API لتجنب مشكلة 403 CORS ────────────────────
-RewriteRule ^sas-api/(.*)$ https://admin.altkamel.ly/user/api/index.php/api/$1 [P,L]
+# ── توجيه طلبات الـ API إلى ملف البروكسي الداخلي ──────────────────────────
+RewriteRule ^sas-api/(.*)$ sas-api/index.php [L,QSA]
 
 # ── 4. ملفات ثابتة موجودة: خدمها مباشرة ──────────────────────────
 RewriteCond %{REQUEST_FILENAME} -f [OR]
