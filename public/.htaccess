@@ -25,6 +25,7 @@ RewriteBase /
 RewriteRule ^_nuxt/         -   [L,NC]
 RewriteRule ^images/        -   [L,NC]
 RewriteRule ^fonts/         -   [L,NC]
+RewriteRule ^sas-api/       -   [L,NC]
 
 # ── 4. ملفات ثابتة موجودة: خدمها مباشرة ──────────────────────────
 RewriteCond %{REQUEST_FILENAME} -f [OR]

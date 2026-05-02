@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 // ✅ صفحة "من نحن" المستقلة - التكامل نت
 
 useHead({
@@ -87,7 +87,7 @@ const values = [
 // ==============================
 const galleryImages = [
   { src: '/images/about/netaltkamel.jpg', alt: 'توقيع اتفاقية الاستحواذ على شبكة 1ST NET' },
-  { src: '/images/about/altkamel_wassem_net.jpg', alt: 'الشريك التجاري مع 1ST NET' },
+  { src: '/images/about/altkamelwassem.jpg', alt: 'الشريك التجاري مع 1ST NET' },
   { src: '/images/about/net.jpg', alt: 'شبكة 1ST NET' },
 ]
 
