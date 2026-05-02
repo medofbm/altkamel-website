@@ -21,11 +21,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ── استخراج المسار ──────────────────────────────────────────────────────────
-// الطلب: /sas-api/login  →  يُوجَّه إلى: SAS_BASE_URL/login
-$requestUri  = $_SERVER['REQUEST_URI'];
-$path        = preg_replace('#^/sas-api/?#', '', parse_url($requestUri, PHP_URL_PATH));
-$queryString = $_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '';
-$targetUrl   = SAS_BASE_URL . '/' . ltrim($path, '/') . $queryString;
+// الطلب: /sas-api/auth/login  →  _path=auth/login (passed by .htaccess rewrite)
+// نقرأ المسار من query string بدلاً من REQUEST_URI (التي تتغير بعد الـ rewrite)
+$path        = isset($_GET['_path']) ? trim($_GET['_path'], '/') : '';
+$queryString = '';
+if (!empty($_SERVER['QUERY_STRING'])) {
+    // نحذف _path= من الـ query string قبل إرسالها
+    parse_str($_SERVER['QUERY_STRING'], $params);
+    unset($params['_path']);
+    $queryString = !empty($params) ? '?' . http_build_query($params) : '';
+}
+$targetUrl = SAS_BASE_URL . '/' . $path . $queryString;
+// مؤقت للتشخيص — يعرض الـ URL النهائي في الـ Response Header
+header('X-Proxy-Target: ' . $targetUrl);
 
 // ── نسخ الـ Request Headers ─────────────────────────────────────────────────
 $forwardHeaders = ['Content-Type: application/json'];

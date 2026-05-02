@@ -27,7 +27,7 @@ RewriteRule ^images/        -   [L,NC]
 RewriteRule ^fonts/         -   [L,NC]
 
 # ── توجيه طلبات الـ API إلى ملف البروكسي الداخلي ──────────────────────────
-RewriteRule ^sas-api/(.*)$ api-proxy.php [L,QSA]
+RewriteRule ^sas-api/(.*)$ api-proxy.php?_path=$1 [L,QSA]
 
 # ── 4. ملفات ثابتة موجودة: خدمها مباشرة ──────────────────────────
 RewriteCond %{REQUEST_FILENAME} -f [OR]
