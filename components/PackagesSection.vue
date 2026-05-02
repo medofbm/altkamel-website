@@ -1,9 +1,9 @@
-<script setup>
+﻿<script setup>
 // ✅ PackagesSection - معرض باقات تفاعلي
 const packages = [
   {
     id: 'pkg-1',
-    image: '/images/packages/4.jpeg',
+    image: '/images/packages/packfour.jpeg',
     alt: 'باقة إنترنت المنازل الأساسية',
     title: 'الباقة الأساسية',
     tag: 'للمنازل',
@@ -11,7 +11,7 @@ const packages = [
   },
   {
     id: 'pkg-2',
-    image: '/images/packages/2.jpeg',
+    image: '/images/packages/packtwo.jpeg',
     alt: 'باقة إنترنت المنازل المتميزة',
     title: 'الباقة المتميزة',
     tag: 'الأكثر طلباً',
@@ -19,7 +19,7 @@ const packages = [
   },
   {
     id: 'pkg-4',
-    image: '/images/packages/1.jpeg',
+    image: '/images/packages/packone.jpeg',
     alt: 'باقة إنترنت الشركات',
     title: 'باقة الأعمال',
     tag: 'للشركات',
@@ -27,7 +27,7 @@ const packages = [
   },
   {
     id: 'pkg-5',
-    image: '/images/packages/6.jpeg',
+    image: '/images/packages/packsix.jpeg',
     alt: 'باقة إنترنت الشركات الذهبية',
     title: 'الباقة الذهبية',
     tag: 'VIP',
