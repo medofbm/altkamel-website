@@ -26,8 +26,8 @@ RewriteRule ^_nuxt/         -   [L,NC]
 RewriteRule ^images/        -   [L,NC]
 RewriteRule ^fonts/         -   [L,NC]
 
-# ── توجيه طلبات الـ API إلى ملف البروكسي الداخلي ──────────────────────────
-RewriteRule ^sas-api/(.*)$ api-proxy.php?_path=$1 [L,QSA]
+# ── 3.5 مجلد sas-api يُخدم مباشرة (PHP proxy) ─────────────────────
+RewriteRule ^sas-api/       -   [L,NC]
 
 # ── 4. ملفات ثابتة موجودة: خدمها مباشرة ──────────────────────────
 RewriteCond %{REQUEST_FILENAME} -f [OR]

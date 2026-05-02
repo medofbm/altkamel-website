@@ -7,7 +7,7 @@
 
 // ── الإعدادات ──────────────────────────────────────────────────────────────
 define('SAS_BASE_URL', 'https://admin.altkamel.ly/user/api/index.php/api');
-define('ALLOWED_ORIGIN', '*'); // أو ضع النطاق: 'https://altkamel.ly'
+define('ALLOWED_ORIGIN', '*');
 
 // ── CORS Headers ────────────────────────────────────────────────────────────
 header('Access-Control-Allow-Origin: ' . ALLOWED_ORIGIN);
@@ -21,33 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ── استخراج المسار ──────────────────────────────────────────────────────────
-// الطلب: /sas-api/auth/login  →  _path=auth/login (passed by .htaccess rewrite)
-// نقرأ المسار من query string بدلاً من REQUEST_URI (التي تتغير بعد الـ rewrite)
-$path        = isset($_GET['_path']) ? trim($_GET['_path'], '/') : '';
-$queryString = '';
-if (!empty($_SERVER['QUERY_STRING'])) {
-    // نحذف _path= من الـ query string قبل إرسالها
-    parse_str($_SERVER['QUERY_STRING'], $params);
-    unset($params['_path']);
-    $queryString = !empty($params) ? '?' . http_build_query($params) : '';
-}
-$targetUrl = SAS_BASE_URL . '/' . $path . $queryString;
-// مؤقت للتشخيص — يعرض الـ URL النهائي في الـ Response Header
-header('X-Proxy-Target: ' . $targetUrl);
+// الطلب: /sas-api/auth/login  →  يُوجَّه إلى: SAS_BASE_URL/auth/login
+// REQUEST_URI هنا = /sas-api/auth/login (محفوظ بالكامل عند استخدام sub-directory .htaccess)
+$requestUri  = $_SERVER['REQUEST_URI'];
+$path        = preg_replace('#^/sas-api/?#', '', parse_url($requestUri, PHP_URL_PATH));
+$queryString = $_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '';
+$targetUrl   = SAS_BASE_URL . '/' . ltrim($path, '/') . $queryString;
 
 // ── نسخ الـ Request Headers ─────────────────────────────────────────────────
 $forwardHeaders = ['Content-Type: application/json'];
 
 if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
     $forwardHeaders[] = 'Authorization: ' . $_SERVER['HTTP_AUTHORIZATION'];
-}
-if (!empty($_SERVER['HTTP_USER_AGENT'])) {
-    $forwardHeaders[] = 'User-Agent: ' . $_SERVER['HTTP_USER_AGENT'];
-} else {
-    $forwardHeaders[] = 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
-}
-if (!empty($_SERVER['HTTP_ORIGIN'])) {
-    $forwardHeaders[] = 'Origin: ' . $_SERVER['HTTP_ORIGIN'];
 }
 
 // ── قراءة الـ Request Body ──────────────────────────────────────────────────
@@ -70,10 +55,10 @@ if (!empty($requestBody)) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $requestBody);
 }
 
-$response   = curl_exec($ch);
-$httpCode   = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$response    = curl_exec($ch);
+$httpCode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-$curlError  = curl_error($ch);
+$curlError   = curl_error($ch);
 curl_close($ch);
 
 // ── إرسال الاستجابة ─────────────────────────────────────────────────────────
