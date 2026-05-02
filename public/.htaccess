@@ -1,0 +1,53 @@
+Options -MultiViews -Indexes
+RewriteEngine On
+RewriteBase /
+
+# ── 1. إضافة Header لمنع عرض HTML كنص خام ─────────────────────────
+<FilesMatch "\.html$">
+  Header set Content-Type "text/html; charset=UTF-8"
+  Header set X-Content-Type-Options "nosniff"
+</FilesMatch>
+
+# ── 2. MIME Types الصحيحة (مطلوب لـ ES Modules) ──────────────────
+<IfModule mod_mime.c>
+  AddType text/html               .html
+  AddType application/javascript  .js  .mjs
+  AddType text/css                .css
+  AddType application/json        .json
+  AddType image/png               .png
+  AddType image/jpeg              .jpg .jpeg
+  AddType image/svg+xml           .svg
+  AddType font/woff2              .woff2
+  AddType font/woff               .woff
+</IfModule>
+
+# ── 3. ملفات الـ Assets تُخدم مباشرة ──────────────────────────────
+RewriteRule ^_nuxt/         -   [L,NC]
+RewriteRule ^images/        -   [L,NC]
+RewriteRule ^fonts/         -   [L,NC]
+
+# ── 4. ملفات ثابتة موجودة: خدمها مباشرة ──────────────────────────
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ── 5. Nuxt SPA routing: كل شيء آخر → index.html ─────────────────
+RewriteRule ^ /index.html [L]
+
+# ── 6. ضغط وأداء ─────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/png  "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType text/css   "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
+# ── 7. منع عرض الملفات كنص خام (نوع إضافي من الحماية) ───────────
+<FilesMatch "\.(js|mjs|css)$">
+  Header set X-Content-Type-Options "nosniff"
+</FilesMatch>

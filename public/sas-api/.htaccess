@@ -1,0 +1,5 @@
+RewriteEngine On
+
+# كل الطلبات إلى /sas-api/* تذهب إلى index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php [L,QSA]

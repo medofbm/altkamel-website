@@ -1,0 +1,18 @@
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node modules
+node_modules
+
+# Environment variables — لا ترفع هذا على GitHub أبداً
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
