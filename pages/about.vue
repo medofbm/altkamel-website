@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 // ✅ صفحة "من نحن" المستقلة - التكامل نت
 
 useHead({
@@ -86,9 +86,9 @@ const values = [
 // صور معرض الإنجازات
 // ==============================
 const galleryImages = [
-  { src: '/images/about/1st_net_and_altkamel.jpg', alt: 'توقيع اتفاقية الاستحواذ على شبكة 1ST NET' },
-  { src: '/images/about/altkamel_wassem_1st_net.jpg', alt: 'الشريك التجاري مع 1ST NET' },
-  { src: '/images/about/1st_net.jpg', alt: 'شبكة 1ST NET' },
+  { src: '/images/about/1stnetaltkamel.jpg', alt: 'توقيع اتفاقية الاستحواذ على شبكة 1ST NET' },
+  { src: '/images/about/altkamel_wassem_1stnet.jpg', alt: 'الشريك التجاري مع 1ST NET' },
+  { src: '/images/about/1stnet.jpg', alt: 'شبكة 1ST NET' },
 ]
 
 // صور خدمات منتقاة للعرض
@@ -596,7 +596,7 @@ onMounted(() => {
 
                   <!-- صورة الخريطة (SVG) -->
                   <img
-                    src="/images/about/tripoli_blueprint_20260420_163632.svg"
+                    src="/images/about/tripoli.svg"
                     alt="مخطط أبراج التغطية في طرابلس"
                     class="w-full h-full object-cover object-center opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-out"
                   />
