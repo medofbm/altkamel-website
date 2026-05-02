@@ -86,9 +86,9 @@ const values = [
 // صور معرض الإنجازات
 // ==============================
 const galleryImages = [
-  { src: '/images/about/1st net & altkamel.jpg', alt: 'توقيع اتفاقية الاستحواذ على شبكة 1ST NET' },
-  { src: '/images/about/altkamel_wassem 1st net.jpg', alt: 'الشريك التجاري مع 1ST NET' },
-  { src: '/images/about/1st net.jpg', alt: 'شبكة 1ST NET' },
+  { src: '/images/about/1st_net_and_altkamel.jpg', alt: 'توقيع اتفاقية الاستحواذ على شبكة 1ST NET' },
+  { src: '/images/about/altkamel_wassem_1st_net.jpg', alt: 'الشريك التجاري مع 1ST NET' },
+  { src: '/images/about/1st_net.jpg', alt: 'شبكة 1ST NET' },
 ]
 
 // صور خدمات منتقاة للعرض
