@@ -1196,21 +1196,27 @@ async function handleActivate() {
 
 // ─── تحميل العقد PDF ─────────────────────────────────────────────────────────
 async function downloadContract() {
+  if (modalLoading.value) return
   modalLoading.value = true
+
   try {
     const html2pdf = (await import('html2pdf.js')).default
     const element = document.getElementById('contract-root')
+    if (!element) throw new Error('Contract element not found')
+
     const filename = `Contract_${userData.value?.id || userData.value?.username || 'Doc'}.pdf`
+
+    // خيارات محسنة لتقليل استهلاك الذاكرة وتجنب التعليق
     const opt = {
-      margin:   0,
+      margin: 0,
       filename: filename,
-      image:    { type: 'jpeg', quality: 0.85 },
+      image: { type: 'jpeg', quality: 0.85 },
       html2canvas: {
-        scale:  Capacitor.isNativePlatform() ? 1 : 1.5, // تقليل الدقة في الموبايل لتجنب تعليق التطبيق
+        scale: Capacitor.isNativePlatform() ? 1 : 1.5,
         useCORS: true,
         logging: false,
         scrollY: 0,
-        windowWidth: 794,
+        windowWidth: 794, // عرض الصفحة A4 بالبكسل (96 DPI)
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'] },
@@ -1220,39 +1226,34 @@ async function downloadContract() {
       showToast('جاري تجهيز العقد... يرجى الانتظار قليلاً', 'warning', 3000)
 
       // توليد الـ PDF كـ Base64
+      // استخدام واجهة Worker لضمان استقرار العملية
       const pdfBase64 = await html2pdf().set(opt).from(element).outputPdf('datauristring')
       if (!pdfBase64) throw new Error('فشل في توليد العقد')
       
       const base64Data = pdfBase64.split(',')[1]
 
-      // حفظ الملف في مجلد المستندات لتنزيله فعلياً في الجهاز
+      // حفظ الملف في مجلد الكاش لتجنب قيود الصلاحيات في أندرويد 11+
       const savedFile = await Filesystem.writeFile({
         path: filename,
         data: base64Data,
-        directory: Directory.Documents,
+        directory: Directory.Cache,
         recursive: true
       })
 
-      showToast('تم التنزيل بنجاح في مجلد المستندات (Documents) ✓', 'success', 6000)
-
-      // استخدام إضافة المشاركة لفتح الملف
-      try {
-        await Share.share({
-          title: 'عقد الاشتراك',
-          text: 'مرفق عقد خدمة الإنترنت من التكامل نت',
-          url: savedFile.uri,
-          dialogTitle: 'فتح أو مشاركة العقد'
-        })
-      } catch (shareErr) {
-        console.log('Share error:', shareErr)
-      }
+      // استخدام إضافة المشاركة لفتح الملف أو إرساله
+      await Share.share({
+        title: 'عقد الاشتراك',
+        text: 'مرفق عقد خدمة الإنترنت من التكامل نت',
+        url: savedFile.uri,
+        dialogTitle: 'فتح أو مشاركة العقد'
+      })
     } else {
       // التنزيل المباشر في المتصفح العادي
       await html2pdf().set(opt).from(element).save()
     }
   } catch (error) {
     console.error('Error generating PDF:', error)
-    showToast('حدث خطأ أثناء توليد الـ PDF. يرجى المحاولة لاحقاً.', 'error')
+    showToast('حدث خطأ أثناء معالجة العقد. يرجى التأكد من اتصال الإنترنت والمحاولة لاحقاً.', 'error', 5000)
   } finally {
     modalLoading.value = false
   }
