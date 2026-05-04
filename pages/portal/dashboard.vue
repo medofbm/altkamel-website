@@ -828,6 +828,10 @@
 </template>
 
 <script setup>
+import { Capacitor } from '@capacitor/core'
+import { Filesystem, Directory } from '@capacitor/filesystem'
+import { Share } from '@capacitor/share'
+
 definePageMeta({ layout: 'dashboard' })
 useHead({ title: 'صفحة العميل | التكامل نت' })
 
@@ -1196,9 +1200,10 @@ async function downloadContract() {
   try {
     const html2pdf = (await import('html2pdf.js')).default
     const element = document.getElementById('contract-root')
+    const filename = `Contract_${userData.value?.id || userData.value?.username || 'Doc'}.pdf`
     const opt = {
       margin:   0,
-      filename: `Contract_${userData.value?.id || userData.value?.username || 'Doc'}.pdf`,
+      filename: filename,
       image:    { type: 'jpeg', quality: 0.98 },
       html2canvas: {
         scale:  1.5,          // أقل من 2 لتجنب تجاوز 297mm
@@ -1210,7 +1215,33 @@ async function downloadContract() {
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'] },
     }
-    await html2pdf().set(opt).from(element).save()
+
+    if (Capacitor.isNativePlatform()) {
+      // توليد الـ PDF كـ Base64
+      const pdfBase64 = await html2pdf().set(opt).from(element).outputPdf('datauristring')
+      const base64Data = pdfBase64.split(',')[1]
+
+      // حفظ الملف في الكاش المؤقت لفتحه
+      const savedFile = await Filesystem.writeFile({
+        path: filename,
+        data: base64Data,
+        directory: Directory.Cache,
+        recursive: true
+      })
+
+      // استخدام إضافة المشاركة لفتح الملف
+      await Share.share({
+        title: 'عقد الاشتراك',
+        text: 'مرفق عقد خدمة الإنترنت من التكامل نت',
+        url: savedFile.uri,
+        dialogTitle: 'حفظ أو عرض العقد'
+      })
+      
+      showToast('تم تجهيز العقد بنجاح ✓', 'success')
+    } else {
+      // التنزيل المباشر في المتصفح العادي
+      await html2pdf().set(opt).from(element).save()
+    }
   } catch (error) {
     console.error('Error generating PDF:', error)
     showToast('حدث خطأ أثناء توليد الـ PDF. يرجى المحاولة لاحقاً.', 'error')
