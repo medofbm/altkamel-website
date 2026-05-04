@@ -155,7 +155,7 @@ const socials = [
               </svg>
               <div>
                 <div class="text-xs font-bold">دعم فني:</div>
-                <a href="tel:0912333345" class="hover:text-cyan-400 transition-colors font-medium">0923339798</a>
+                <a href="https://wa.me/218923339798" target="_blank" class="hover:text-cyan-400 transition-colors font-medium">0923339798</a>
               </div>
             </li>
             <!-- البريد -->

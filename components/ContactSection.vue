@@ -193,7 +193,8 @@ const socials = [
 
             <!-- الدعم الفني -->
             <a
-              href="tel:0912333345"
+              href="https://wa.me/218923339798"
+              target="_blank"
               class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-teal-50 hover:border-teal-200 transition-colors duration-200 group"
             >
               <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform duration-200">

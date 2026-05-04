@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   webDir: '.output/public', // التعديل صار هنا
   server: {
     url: 'https://altkamel.ly/portal/login',
-    cleartext: true
+    cleartext: true,
+    allowNavigation: ['wa.me', 'api.whatsapp.com', 'chat.whatsapp.com']
   }
 };
 
