@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Altkamel net</string>
+    <string name="title_activity_main">Altkamel net</string>
+    <string name="package_name">com.altkamel.app</string>
+    <string name="custom_url_scheme">com.altkamel.app</string>
+</resources>
