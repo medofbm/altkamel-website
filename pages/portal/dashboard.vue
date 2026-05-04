@@ -1204,40 +1204,48 @@ async function downloadContract() {
     const opt = {
       margin:   0,
       filename: filename,
-      image:    { type: 'jpeg', quality: 0.98 },
+      image:    { type: 'jpeg', quality: 0.85 },
       html2canvas: {
-        scale:  1.5,          // أقل من 2 لتجنب تجاوز 297mm
+        scale:  Capacitor.isNativePlatform() ? 1 : 1.5, // تقليل الدقة في الموبايل لتجنب تعليق التطبيق
         useCORS: true,
         logging: false,
         scrollY: 0,
-        windowWidth: 794,   // عرض A4 بالـ px عند 96dpi
+        windowWidth: 794,
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'] },
     }
 
     if (Capacitor.isNativePlatform()) {
+      showToast('جاري تجهيز العقد... يرجى الانتظار قليلاً', 'warning', 3000)
+
       // توليد الـ PDF كـ Base64
       const pdfBase64 = await html2pdf().set(opt).from(element).outputPdf('datauristring')
+      if (!pdfBase64) throw new Error('فشل في توليد العقد')
+      
       const base64Data = pdfBase64.split(',')[1]
 
-      // حفظ الملف في الكاش المؤقت لفتحه
+      // حفظ الملف في مجلد المستندات لتنزيله فعلياً في الجهاز
       const savedFile = await Filesystem.writeFile({
         path: filename,
         data: base64Data,
-        directory: Directory.Cache,
+        directory: Directory.Documents,
         recursive: true
       })
 
+      showToast('تم التنزيل بنجاح في مجلد المستندات (Documents) ✓', 'success', 6000)
+
       // استخدام إضافة المشاركة لفتح الملف
-      await Share.share({
-        title: 'عقد الاشتراك',
-        text: 'مرفق عقد خدمة الإنترنت من التكامل نت',
-        url: savedFile.uri,
-        dialogTitle: 'حفظ أو عرض العقد'
-      })
-      
-      showToast('تم تجهيز العقد بنجاح ✓', 'success')
+      try {
+        await Share.share({
+          title: 'عقد الاشتراك',
+          text: 'مرفق عقد خدمة الإنترنت من التكامل نت',
+          url: savedFile.uri,
+          dialogTitle: 'فتح أو مشاركة العقد'
+        })
+      } catch (shareErr) {
+        console.log('Share error:', shareErr)
+      }
     } else {
       // التنزيل المباشر في المتصفح العادي
       await html2pdf().set(opt).from(element).save()
