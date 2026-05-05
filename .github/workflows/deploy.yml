@@ -35,16 +35,17 @@ jobs:
         set net:max-retries 5;
         set net:reconnect-interval-base 5;
         open -u '${{ secrets.FTP_USERNAME }}','${{ secrets.FTP_PASSWORD }}' ftp://${{ secrets.FTP_SERVER }};
-        mirror --reverse --verbose --parallel=3 --ignore-time --no-perms --delete \
-          --exclude '^api-proxy\.php$' \
-          --exclude '^images/' \
-          --exclude '^sas-api/' \
-          --exclude '^\.htaccess$' \
-          --exclude '^\.ftpquota$' \
-          --exclude '^\.well-known/' \
-          --exclude '^public/' \
-          --exclude '^package-lock\.json$' \
-          --exclude '^\.ftp-deploy-sync-state\.json$' \
+
+        # ── المرحلة 1: تنظيف _nuxt القديم ورفع الجديد فقط (مع الحذف) ──
+        # هذا يضمن حذف chunks البناء القديمة ومنع تراكمها
+        mirror --reverse --verbose --delete --parallel=5 --ignore-time --no-perms \
+          .output/public/_nuxt/ /_nuxt/;
+
+        # ── المرحلة 2: رفع باقي الملفات بدون حذف (آمن 100%) ──
+        # يرفع ويحدث الملفات فقط، ولا يمس أي شيء موجود على السيرفر
+        mirror --reverse --verbose --parallel=3 --ignore-time --no-perms \
+          --exclude '^_nuxt/' \
           .output/public/ /;
+
         quit;
         "
