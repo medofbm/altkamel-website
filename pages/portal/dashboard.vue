@@ -1202,58 +1202,93 @@ async function downloadContract() {
   try {
     const html2pdf = (await import('html2pdf.js')).default
     const element = document.getElementById('contract-root')
-    if (!element) throw new Error('Contract element not found')
+    if (!element) throw new Error('عنصر العقد غير موجود')
 
     const filename = `Contract_${userData.value?.id || userData.value?.username || 'Doc'}.pdf`
 
-    // خيارات محسنة لتقليل استهلاك الذاكرة وتجنب التعليق
     const opt = {
       margin: 0,
       filename: filename,
-      image: { type: 'jpeg', quality: 0.85 },
+      image: { type: 'jpeg', quality: 0.90 },
       html2canvas: {
-        scale: Capacitor.isNativePlatform() ? 1 : 1.5,
+        scale: 1.5,
         useCORS: true,
         logging: false,
+        letterRendering: true,
         scrollY: 0,
-        windowWidth: 794, // عرض الصفحة A4 بالبكسل (96 DPI)
+        windowWidth: 794,
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'] },
     }
 
     if (Capacitor.isNativePlatform()) {
-      showToast('جاري تجهيز العقد... يرجى الانتظار قليلاً', 'warning', 3000)
+      // ─── نسخة الأندرويد ───
+      showToast('جاري تجهيز العقد...', 'warning', 8000)
 
-      // توليد الـ PDF كـ Base64
-      // استخدام واجهة Worker لضمان استقرار العملية
-      const pdfBase64 = await html2pdf().set(opt).from(element).outputPdf('datauristring')
-      if (!pdfBase64) throw new Error('فشل في توليد العقد')
-      
-      const base64Data = pdfBase64.split(',')[1]
+      // 1) توليد PDF كـ Blob
+      let pdfBlob
+      try {
+        pdfBlob = await html2pdf().set(opt).from(element).outputPdf('blob')
+      } catch (genErr) {
+        console.error('[PDF] خطأ أثناء التوليد:', genErr)
+        throw new Error('تعذّر توليد ملف PDF. يرجى المحاولة لاحقاً.')
+      }
 
-      // حفظ الملف في مجلد الكاش لتجنب قيود الصلاحيات في أندرويد 11+
-      const savedFile = await Filesystem.writeFile({
-        path: filename,
-        data: base64Data,
-        directory: Directory.Cache,
-        recursive: true
+      if (!pdfBlob || pdfBlob.size === 0) {
+        throw new Error('ملف PDF فارغ. يرجى المحاولة مجدداً.')
+      }
+
+      // 2) تحويل Blob → Base64 (باستخدام Promise لضمان الانتظار الصحيح)
+      const base64DataOnly = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const result = reader.result
+          if (result) {
+            resolve(result.split(',')[1])
+          } else {
+            reject(new Error('فشل قراءة الملف.'))
+          }
+        }
+        reader.onerror = () => reject(new Error('خطأ أثناء قراءة الملف.'))
+        reader.readAsDataURL(pdfBlob)
       })
 
-      // استخدام إضافة المشاركة لفتح الملف أو إرساله
-      await Share.share({
-        title: 'عقد الاشتراك',
-        text: 'مرفق عقد خدمة الإنترنت من التكامل نت',
-        url: savedFile.uri,
-        dialogTitle: 'فتح أو مشاركة العقد'
-      })
+      // 3) حفظ الملف في Cache
+      let savedFile
+      try {
+        savedFile = await Filesystem.writeFile({
+          path: filename,
+          data: base64DataOnly,
+          directory: Directory.Cache,
+        })
+      } catch (fsErr) {
+        console.error('[PDF] خطأ حفظ الملف:', fsErr)
+        throw new Error('تعذّر حفظ الملف على الجهاز. تحقق من أذونات التخزين.')
+      }
+
+      // 4) مشاركة الملف عبر نافذة النظام
+      try {
+        await Share.share({
+          title: 'عقد الاشتراك — التكامل نت',
+          url: savedFile.uri,
+          dialogTitle: 'حفظ أو فتح عقد الاشتراك',
+        })
+        showToast('تم تجهيز العقد بنجاح! اختر تطبيقاً لحفظه أو فتحه.', 'success', 4000)
+      } catch (shareErr) {
+        // المستخدم أغلق نافذة المشاركة — ليس خطأ حقيقياً
+        console.log('[PDF] المستخدم أغلق نافذة المشاركة:', shareErr?.message)
+        showToast('تم تجهيز الملف. اختر تطبيقاً لحفظه.', 'warning', 3000)
+      }
+
     } else {
-      // التنزيل المباشر في المتصفح العادي
+      // ─── نسخة المتصفح العادي ───
       await html2pdf().set(opt).from(element).save()
+      showToast('تم تحميل العقد بنجاح! ✓', 'success', 4000)
     }
   } catch (error) {
-    console.error('Error generating PDF:', error)
-    showToast('حدث خطأ أثناء معالجة العقد. يرجى التأكد من اتصال الإنترنت والمحاولة لاحقاً.', 'error', 5000)
+    console.error('[PDF] خطأ عام:', error)
+    showToast(error?.message || 'حدث خطأ أثناء معالجة العقد. يرجى المحاولة لاحقاً.', 'error', 6000)
   } finally {
     modalLoading.value = false
   }

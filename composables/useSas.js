@@ -90,15 +90,44 @@ export function useSas() {
   const config = useRuntimeConfig()
   const AES_KEY = config.public.sasAesKey || ''
 
-  // ── 1. تسجيل الدخول ──────────────────────────────────────────────────────────
+  // ── 1. تسجيل الدخول ────────────────────────────────────────────────
   async function login(username, password) {
     const body = encryptPayload({ username, password, language: 'en' }, AES_KEY)
     try {
       const result = await sasRequest('/auth/login', { method: 'POST', body })
       if (result?.token) return { token: result.token }
-      return { error: translateError(result, 'فشل تسجيل الدخول.') }
+
+      // تحديد رسالة خطأ واضحة للمستخدم
+      const code = result?.error || result?.message || ''
+      const loginErrors = {
+        rsp_invalid_username_or_password: 'اسم المستخدم أو كلمة المرور غير صحيحة. تحقق من بياناتك وحاول مجدداً.',
+        rsp_user_disabled:                'حسابك موقوف مؤقتاً. يرجى التواصل مع الدعم الفني.',
+        rsp_user_not_found:               'لا يوجد حساب بهذا الاسم. تحقق من صحة اسم المستخدم.',
+        rsp_invalid_payload:              'خطأ داخلي. يرجى إعادة المحاولة.',
+        rsp_account_expired:              'انتهت صلاحية الحساب. تواصل مع الدعم لتجديد اشتراكك.',
+        rsp_unauthenticated:              'حدثت مشكلة في المصادقة. يرجى إعادة المحاولة.',
+        rsp_too_many_requests:            'تجاوزت عدد محاولات تسجيل الدخول. انتظر دقيقة ثم حاول مجدداً.',
+      }
+
+      // أحدد الرسالة من القاموس أولاً
+      if (loginErrors[code]) {
+        return { error: loginErrors[code] }
+      }
+
+      // إذا كان الرد HTTP 401 أو 403
+      if (result?._httpStatus === 401) {
+        return { error: 'اسم المستخدم أو كلمة المرور غير صحيحة.' }
+      }
+
+      // أي رسالة تبدأ بـ rsp_ يجب ترجمتها بدل عرضها كما هي
+      if (typeof code === 'string' && code.startsWith('rsp_')) {
+        return { error: 'فشل تسجيل الدخول. تحقق من بياناتك وحاول مجدداً.' }
+      }
+
+      return { error: 'فشل تسجيل الدخول. تحقق من بياناتك وحاول مجدداً.' }
     } catch (err) {
-      return { error: err.message }
+      if (err.message?.includes('تعذّر الاتصال')) return { error: 'تعذّر الاتصال بالخادم. تحقق من الإنترنت وحاول مجدداً.' }
+      return { error: 'حدث خطأ غير متوقع. يرجى إعادة المحاولة.' }
     }
   }
 
