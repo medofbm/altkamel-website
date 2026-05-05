@@ -35,6 +35,12 @@ jobs:
         set net:max-retries 5;
         set net:reconnect-interval-base 5;
         open -u '${{ secrets.FTP_USERNAME }}','${{ secrets.FTP_PASSWORD }}' ftp://${{ secrets.FTP_SERVER }};
-        mirror --reverse --verbose --parallel=3 --ignore-time --no-perms .output/public/ /;
+        mirror --reverse --verbose --parallel=3 --ignore-time --no-perms --delete \
+          --exclude '^api-proxy\.php$' \
+          --exclude '^images/' \
+          --exclude '^sas-api/' \
+          --exclude '^\.htaccess$' \
+          --exclude '^\.ftpquota$' \
+          .output/public/ /;
         quit;
         "
