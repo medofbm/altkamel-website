@@ -41,6 +41,10 @@ jobs:
           --exclude '^sas-api/' \
           --exclude '^\.htaccess$' \
           --exclude '^\.ftpquota$' \
+          --exclude '^\.well-known/' \
+          --exclude '^public/' \
+          --exclude '^package-lock\.json$' \
+          --exclude '^\.ftp-deploy-sync-state\.json$' \
           .output/public/ /;
         quit;
         "
