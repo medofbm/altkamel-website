@@ -1222,9 +1222,13 @@ async function downloadContract() {
       pagebreak: { mode: ['css', 'legacy'] },
     }
 
-    if (Capacitor.isNativePlatform()) {
-      // ─── نسخة الأندرويد ───
-      showToast('جاري تجهيز العقد...', 'warning', 8000)
+    // كشف بيئة الأندرويد: isNativePlatform أو userAgent
+    const isAndroid = Capacitor.isNativePlatform() ||
+      /android/i.test(navigator.userAgent)
+
+    if (isAndroid) {
+      // ─── نسخة الأندرويد ───────────────────────────────────────────
+      showToast('جاري تجهيز العقد...', 'warning', 10000)
 
       // 1) توليد PDF كـ Blob
       let pdfBlob
@@ -1239,7 +1243,7 @@ async function downloadContract() {
         throw new Error('ملف PDF فارغ. يرجى المحاولة مجدداً.')
       }
 
-      // 2) تحويل Blob → Base64 (باستخدام Promise لضمان الانتظار الصحيح)
+      // 2) Blob → Base64
       const base64DataOnly = await new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onloadend = () => {
@@ -1254,7 +1258,7 @@ async function downloadContract() {
         reader.readAsDataURL(pdfBlob)
       })
 
-      // 3) حفظ الملف في Cache
+      // 3) حفظ في Cache
       let savedFile
       try {
         savedFile = await Filesystem.writeFile({
@@ -1267,25 +1271,26 @@ async function downloadContract() {
         throw new Error('تعذّر حفظ الملف على الجهاز. تحقق من أذونات التخزين.')
       }
 
-      // 4) مشاركة الملف عبر نافذة النظام
+      // 4) مشاركة عبر نافذة النظام
       try {
         await Share.share({
           title: 'عقد الاشتراك — التكامل نت',
           url: savedFile.uri,
           dialogTitle: 'حفظ أو فتح عقد الاشتراك',
         })
-        showToast('تم تجهيز العقد بنجاح! اختر تطبيقاً لحفظه أو فتحه.', 'success', 4000)
+        showToast('تم تجهيز العقد! اختر تطبيقاً لحفظه.', 'success', 4000)
       } catch (shareErr) {
-        // المستخدم أغلق نافذة المشاركة — ليس خطأ حقيقياً
-        console.log('[PDF] المستخدم أغلق نافذة المشاركة:', shareErr?.message)
-        showToast('تم تجهيز الملف. اختر تطبيقاً لحفظه.', 'warning', 3000)
+        // المستخدم أغلق نافذة المشاركة — ليس خطأ
+        console.log('[PDF] أُغلقت نافذة المشاركة:', shareErr?.message)
+        showToast('تم حفظ الملف في ذاكرة الجهاز.', 'success', 3000)
       }
 
     } else {
-      // ─── نسخة المتصفح العادي ───
+      // ─── نسخة المتصفح العادي ──────────────────────────────────────
       await html2pdf().set(opt).from(element).save()
       showToast('تم تحميل العقد بنجاح! ✓', 'success', 4000)
     }
+
   } catch (error) {
     console.error('[PDF] خطأ عام:', error)
     showToast(error?.message || 'حدث خطأ أثناء معالجة العقد. يرجى المحاولة لاحقاً.', 'error', 6000)
@@ -1293,6 +1298,7 @@ async function downloadContract() {
     modalLoading.value = false
   }
 }
+
 
 // ─── تنسيق التاريخ ───────────────────────────────────────────────────────────
 function formatDate(dateStr) {

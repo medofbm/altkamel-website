@@ -166,7 +166,6 @@
           </form>
         </div>
 
-        <!-- الدعم -->
         <div class="mt-8 text-center">
           <p class="text-slate-500 text-sm font-medium">
             تحتاج مساعدة؟
@@ -174,10 +173,6 @@
               تواصل مع الدعم الفني
             </a>
           </p>
-          <NuxtLink href="/" class="inline-flex items-center gap-2 mt-4 text-sm text-slate-400 font-bold hover:text-slate-600 transition-colors group">
-            <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-            العودة للصفحة الرئيسية
-          </NuxtLink>
         </div>
 
       </div>

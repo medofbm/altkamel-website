@@ -7,7 +7,12 @@ const config: CapacitorConfig = {
   server: {
     url: 'https://altkamel.ly/portal/login',
     cleartext: true,
-    allowNavigation: ['wa.me', 'api.whatsapp.com', 'chat.whatsapp.com']
+    allowNavigation: [
+      'altkamel.ly',
+      'wa.me',
+      'api.whatsapp.com',
+      'chat.whatsapp.com'
+    ]
   }
 };
 

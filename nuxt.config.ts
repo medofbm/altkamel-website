@@ -65,4 +65,18 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
+
+  // ✅ إجبار esbuild على معالجة ملفات JS بـ UTF-8 لحل مشكلة النصوص العربية
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          charset: 'utf8'
+        }
+      }
+    },
+    esbuild: {
+      charset: 'utf8'
+    }
+  }
 })
