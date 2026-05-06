@@ -173,6 +173,10 @@
               تواصل مع الدعم الفني
             </a>
           </p>
+          <NuxtLink v-if="!isNativeApp" href="/" class="inline-flex items-center gap-2 mt-4 text-sm text-slate-400 font-bold hover:text-slate-600 transition-colors group">
+            <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            العودة للصفحة الرئيسية
+          </NuxtLink>
         </div>
 
       </div>
@@ -182,6 +186,8 @@
 </template>
 
 <script setup>
+import { Capacitor } from '@capacitor/core'
+
 definePageMeta({ layout: false })
 useHead({ title: 'تسجيل الدخول | بوابة مشتركي التكامل نت' })
 
@@ -189,8 +195,12 @@ const router = useRouter()
 const { login }       = useSas()
 const { saveSession, isAuthenticated } = useAuth()
 
+const isNativeApp = ref(false)
+
 // إذا كان مسجّلاً مسبقاً أرسله مباشرة للداشبورد
 onMounted(() => {
+  isNativeApp.value = Capacitor.isNativePlatform() || /android/i.test(navigator.userAgent)
+
   if (isAuthenticated()) {
     router.replace('/portal/dashboard')
   }

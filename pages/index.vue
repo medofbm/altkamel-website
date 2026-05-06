@@ -1,4 +1,14 @@
 <script setup>
+import { Capacitor } from '@capacitor/core'
+const router = useRouter()
+
+onMounted(() => {
+  // توجيه مستخدمي تطبيق الأندرويد مباشرة إلى البوابة
+  if (Capacitor.isNativePlatform()) {
+    router.replace('/portal/login')
+  }
+})
+
 useHead({ title: 'التكامل نت - خدمات الإنترنت والاتصالات | ليبيا' })
 </script>
 
