@@ -585,7 +585,7 @@
                   @keypress="blockNonDigit"
                   @paste.prevent="onPinPaste"
                   class="w-full text-center tracking-[0.3em] px-4 py-3.5 rounded-2xl border-2 transition-all font-black text-lg text-slate-800 bg-slate-50 focus:bg-white outline-none appearance-none"
-                  style="-moz-appearance:textfield;"
+                  style="appearance: textfield; -moz-appearance: textfield;"
                   :class="redeemPinError ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'"
                 />
                 <!-- عداد الأرقام -->
