@@ -110,13 +110,7 @@
               </li>
             </ul>
 
-            <!-- ─── شارة / معلومة ─── -->
-            <div
-              class="w-full py-2 sm:py-2.5 rounded-xl text-center font-black text-[10px] sm:text-xs"
-              :class="pkg.current ? 'bg-indigo-50 text-indigo-600 border border-indigo-200' : 'bg-slate-50 text-slate-400 border border-slate-100'"
-            >
-              {{ pkg.current ? '✓ باقتك الحالية' : 'تواصل مع الدعم لتغييرها' }}
-            </div>
+            
           </div>
         </div>
       </div>
