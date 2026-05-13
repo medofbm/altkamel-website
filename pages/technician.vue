@@ -139,7 +139,7 @@
                   type="text"
                   required
                   autocomplete="off"
-                  placeholder="مثال: ALTKAMEL-SARAYA1"
+                  placeholder="مثال: ALTKAMEL_S1"
                   :class="fieldClass(errors.sectorName)"
                 />
               </div>
