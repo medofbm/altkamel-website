@@ -74,17 +74,32 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
         </li>
       </ul>
 
-      <!-- زر بوابة المشتركين Desktop -->
-      <NuxtLink
-        to="/portal/login"
-        class="hidden md:inline-flex btn-primary text-sm px-5 py-2.5 gap-2"
-      >
-        <!-- أيقونة مستخدم -->
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-        </svg>
-        بوابة المشتركين
-      </NuxtLink>
+      <!-- أزرار البوابات Desktop -->
+      <div class="hidden md:flex items-center gap-2">
+        <!-- زر بوابة الفنيين -->
+        <NuxtLink
+          to="/technician"
+          class="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-bold transition-all duration-200 border"
+          :class="isScrolled
+            ? 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100 hover:shadow-sm'
+            : 'bg-teal-500/15 text-teal-200 border-teal-400/30 hover:bg-teal-500/25 hover:text-white'"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+          </svg>
+          بوابة الفنيين
+        </NuxtLink>
+        <!-- زر بوابة المشتركين -->
+        <NuxtLink
+          to="/portal/login"
+          class="inline-flex items-center gap-2 btn-primary text-sm px-5 py-2.5"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+          </svg>
+          بوابة المشتركين
+        </NuxtLink>
+      </div>
 
       <!-- زر Hamburger Mobile -->
       <button
@@ -122,7 +137,19 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
               @click="closeMenu"
             >{{ link.label }}</a>
           </li>
-          <li class="pt-2">
+          <li class="pt-2 space-y-2">
+            <!-- زر بوابة الفنيين موبايل -->
+            <NuxtLink
+              to="/technician"
+              class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-teal-700 bg-teal-50 border border-teal-200 hover:bg-teal-100 transition-colors"
+              @click="closeMenu"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+              </svg>
+              بوابة الفنيين / إعداد الأنتينا
+            </NuxtLink>
+            <!-- زر بوابة المشتركين موبايل -->
             <NuxtLink
               to="/portal/login"
               class="btn-primary w-full justify-center gap-2"
