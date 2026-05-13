@@ -73,7 +73,7 @@
         <!-- شعار للموبايل -->
         <div class="flex flex-col items-center mb-8 lg:hidden">
           <img src="/images/logo/logo.png" alt="التكامل نت" class="h-14 w-auto mb-3" />
-          <span class="text-xs font-bold text-slate-500 tracking-wider uppercase">Altakamol Net</span>
+          <span class="text-xs font-bold text-slate-500 tracking-wider uppercase">Altkamel Net</span>
         </div>
 
         <!-- عنوان النموذج -->
