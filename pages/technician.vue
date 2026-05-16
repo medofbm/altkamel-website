@@ -119,6 +119,45 @@
 
           <form @submit.prevent="handleGenerate" class="space-y-5" novalidate>
 
+            <!-- حقل نوع المعدة -->
+            <div>
+              <label for="deviceType" class="block text-sm font-black text-slate-700 mb-2">
+                نوع المعدة
+                <span class="text-rose-500 mr-0.5">*</span>
+              </label>
+              <div class="relative group">
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors"
+                       fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m14-6h2m-2 6h2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                  </svg>
+                </div>
+                <select
+                  id="deviceType"
+                  v-model="form.deviceType"
+                  required
+                  :class="[fieldClass(errors.deviceType), 'appearance-none pl-10']"
+                >
+                  <option value="" disabled selected>اختر نوع المعدة</option>
+                  <option value="LiteBeam 5AC">LiteBeam 5AC</option>
+                  <option value="PowerBeam M5">PowerBeam M5</option>
+                </select>
+                <!-- سهم القائمة المنسدلة -->
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+              <p v-if="errors.deviceType" class="mt-1.5 text-xs text-rose-500 font-bold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                {{ errors.deviceType }}
+              </p>
+            </div>
+
             <!-- حقل اسم السكتور -->
             <div>
               <label for="sectorName" class="block text-sm font-black text-slate-700 mb-2">
@@ -303,8 +342,8 @@ const features = [
 ]
 
 // ── حالة النموذج ──
-const form = reactive({ sectorName: '', username: '', phone: '' })
-const errors      = reactive({ sectorName: '', username: '', phone: '' })
+const form = reactive({ deviceType: '', sectorName: '', username: '', phone: '' })
+const errors      = reactive({ deviceType: '', sectorName: '', username: '', phone: '' })
 const isGenerating = ref(false)
 const successMsg   = ref('')
 const errorMsg     = ref('')
@@ -320,9 +359,15 @@ const fieldClass = (hasError) =>
 // ── التحقق من المدخلات ──
 function validate() {
   let valid = true
+  errors.deviceType = ''
   errors.sectorName = ''
   errors.username   = ''
   errors.phone      = ''
+
+  if (!form.deviceType) {
+    errors.deviceType = 'الرجاء اختيار نوع المعدة'
+    valid = false
+  }
 
   if (!form.sectorName.trim()) {
     errors.sectorName = 'اسم السكتور مطلوب'
@@ -355,10 +400,11 @@ async function handleGenerate() {
   await new Promise(r => setTimeout(r, 600))
 
   try {
-    generateAndDownloadCfg(form.sectorName, form.username, form.phone)
+    generateAndDownloadCfg(form.sectorName, form.username, form.phone, form.deviceType)
     successMsg.value = `✅ تم توليد وتنزيل الملف ATK-${form.username.trim()}.cfg بنجاح!`
     // إعادة تعيين النموذج بعد النجاح
     setTimeout(() => {
+      form.deviceType = ''
       form.sectorName = ''
       form.username   = ''
       form.phone      = ''

@@ -4,6 +4,7 @@
 //    ALTKAMEL-XXXX  → اسم السكتور  (السطور 207, 220)
 //    ATK-username   → اسم المستخدم (السطور 120, 185)
 //    phonenumber    → رقم الهاتف   (السطر  119)
+//    TXPOWER_VALUE  → قوة البث     (السطر 281)
 // =====================================================================
 
 export const CFG_TEMPLATE = `### PART ###
@@ -278,7 +279,7 @@ syslog.remote.status=disabled
 syslog.remote.port=514
 snmp.status=disabled
 snmp.community=public
-radio.1.txpower=24
+radio.1.txpower=TXPOWER_VALUE
 radio.1.status=enabled
 radio.1.scanbw.status=disabled
 radio.1.scan_list.status=disabled
@@ -352,16 +353,25 @@ users.2.password=$1$yfiF3IxO$zuKd1MPjXm7Rmapw7oot71
  * @param {string} sectorName  - اسم السكتور (يحل محل ALTKAMEL-XXXX)
  * @param {string} username    - اسم المستخدم (يحل محل ATK-username)
  * @param {string} phone       - رقم الهاتف / كلمة المرور (يحل محل phonenumber)
+ * @param {string} deviceType  - نوع المعدة (PowerBeam M5 أو LiteBeam 5AC)
  */
-export function generateAndDownloadCfg(sectorName, username, phone) {
+export function generateAndDownloadCfg(sectorName, username, phone, deviceType) {
   // استبدال جميع التكرارات لكل placeholder
   let config = CFG_TEMPLATE
   config = config.replaceAll('ALTKAMEL-XXXX', sectorName.trim())
   config = config.replaceAll('ATK-username',  username.trim())
   config = config.replaceAll('phonenumber',   phone.trim())
 
+  let txPower = '24'
+  if (deviceType === 'PowerBeam M5') {
+    txPower = '26'
+  } else if (deviceType === 'LiteBeam 5AC') {
+    txPower = '24'
+  }
+  config = config.replaceAll('TXPOWER_VALUE', txPower)
+
   // إنشاء الملف وتحميله
-  const blob = new Blob([config], { type: 'text/plain;charset=utf-8' })
+  const blob = new Blob([config], { type: 'application/octet-stream' })
   const url  = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href     = url
