@@ -4,9 +4,12 @@
 
 import CryptoJS from 'crypto-js'
 import MSG from './sas-messages.json'
-import { Capacitor } from '@capacitor/core'
 
-const BASE_URL = Capacitor.isNativePlatform() ? 'https://altkamel.ly/sas-api' : '/sas-api'
+// ✅ Capacitor تعمل فقط في بيئة Client — process.client يمنع تنفيذها على السيرفر
+import { Capacitor } from '@capacitor/core'
+const BASE_URL = (process.client && Capacitor.isNativePlatform())
+  ? 'https://altkamel.ly/sas-api'
+  : '/sas-api'
 
 function encryptPayload(data, secretKey) {
   const jsonStr = JSON.stringify(data)

@@ -34,10 +34,20 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# ── 5. Nuxt SPA routing: كل شيء آخر → index.html ─────────────────
+# ── 5. Static SSG routing ─────────────────────────────────────────
+# الصفحات العامة لها index.html خاص (مُولَّد مسبقاً بـ nuxt generate):
+#   /about      → /about/index.html      ✅ HTML كامل مع SEO
+#   /technician → /technician/index.html ✅ HTML كامل مع SEO
+# Apache يخدمها تلقائياً بقاعدة 4 أعلاه (DirectoryIndex).
+#
+# صفحات البوابة الخاصة ليس لها index.html مولَّد:
+#   /portal/**  → /index.html  (SPA fallback — Client-Side)
+RewriteRule ^portal(/.*)?$ /index.html [L]
+
+# ── 6. Fallback عام للمسارات غير المعروفة ────────────────────────
 RewriteRule ^ /index.html [L]
 
-# ── 6. ضغط وأداء ─────────────────────────────────────────────────
+# ── 7. ضغط وأداء ─────────────────────────────────────────────────
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
 </IfModule>
@@ -50,7 +60,7 @@ RewriteRule ^ /index.html [L]
   ExpiresByType application/javascript "access plus 1 week"
 </IfModule>
 
-# ── 7. منع عرض الملفات كنص خام (نوع إضافي من الحماية) ───────────
+# ── 8. منع عرض الملفات كنص خام (نوع إضافي من الحماية) ───────────
 <FilesMatch "\.(js|mjs|css)$">
   Header set X-Content-Type-Options "nosniff"
 </FilesMatch>

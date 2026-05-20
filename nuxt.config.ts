@@ -1,26 +1,31 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // ✅ SPA Mode — يولّد ملفات HTML/JS/CSS ثابتة بدون Node.js server
-  //    مثالي لـ cPanel shared hosting (Apache / LiteSpeed)
-  ssr: false,
+  // ✅ SSR مُفعَّل — يُولِّد HTML كامل لكل صفحة عامة (SEO & Social Sharing)
+  //    صفحات البوابة الخاصة تبقى Client-Side عبر routeRules أدناه
+  //    مثالي لـ cPanel shared hosting (Apache / LiteSpeed) مع nuxt generate
 
   // ✅ المتغيرات العامة (Runtime Config)
   runtimeConfig: {
     public: {
       // مفتاح AES لتشفير SASv4 — احفظه في .env: NUXT_PUBLIC_SAS_AES_KEY=xxxx
       sasAesKey: '',
-      // ⚠️ في SPA mode لا يوجد Nitro proxy، نستخدم /sas-api/ وندير الـ proxy عبر .htaccess
+      // الـ CORS proxy يعمل عبر .htaccess (api-proxy.php في public_html)
       sasApiBase: '/sas-api',
     }
   },
 
-  // ✅ Nitro — preset static لـ npm run generate
+  // ✅ Nitro — preset static لـ npm run generate (cPanel)
   nitro: {
     preset: 'static',
-    // ملاحظة: routeRules proxy لا تعمل في static mode
-    // الـ CORS proxy الآن يعمل عبر .htaccess (RewriteRule في public_html)
     routeRules: {
-      '/sas-api/**': { proxy: 'https://altkamel.ly/sas-api/**' }
+      // ── الصفحات العامة: تُولَّد كـ HTML كامل عند البناء (SEO ممتاز) ──
+      '/':           { prerender: true },
+      '/about':      { prerender: true },
+      '/technician': { prerender: true },
+
+      // ── صفحات البوابة الخاصة: Client-Side فقط (لا تحتاج SEO) ──
+      '/portal':           { ssr: false },
+      '/portal/**':        { ssr: false },
     }
   },
 
@@ -33,14 +38,19 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'ar', dir: 'rtl' },
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
-      title: 'شركة التكامل نت',
+      title: 'التكامل نت | خدمات الإنترنت والاتصالات في ليبيا',
       meta: [
         {
           name: 'description',
           content:
-            'شركة التكامل للاتصالات وتقنية المعلومات - نقدم أفضل خدمات الإنترنت للمنازل والشركات، شبكات مخصصة، وحلول الأمن السيبراني.',
+            'شركة التكامل نت للاتصالات وتقنية المعلومات — باقات إنترنت للمنازل والشركات في ليبيا. سرعات عالية، دعم فني 24/7، وحلول مخصصة.',
         },
         { name: 'theme-color', content: '#4f46e5' },
+        // ── Open Graph افتراضي (يُستبدل في كل صفحة بـ useSeoMeta) ──
+        { property: 'og:site_name', content: 'التكامل نت' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:image', content: 'https://altkamel.ly/images/og-image.jpg' },
+        { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [
         // ✅ أيقونة التبويب (Favicon) - شعار الشركة

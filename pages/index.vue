@@ -9,7 +9,21 @@ onMounted(() => {
   }
 })
 
-useHead({ title: 'التكامل نت - خدمات الإنترنت والاتصالات | ليبيا' })
+// ✅ SEO كامل — يُولَّد كـ HTML ثابت عند البناء (محركات البحث + السوشيال ميديا)
+useSeoMeta({
+  title: 'التكامل نت - خدمات الإنترنت والاتصالات | ليبيا',
+  description: 'باقات إنترنت للمنازل والشركات في ليبيا — سرعات عالية، دعم فني 24/7، وحلول اتصالات مخصصة. تواصل معنا اليوم!',
+  ogTitle: 'التكامل نت - خدمات الإنترنت والاتصالات',
+  ogDescription: 'اكتشف باقات الإنترنت المتنوعة من شركة التكامل نت — للمنازل والشركات في ليبيا. سرعات عالية وأسعار تنافسية.',
+  ogImage: 'https://altkamel.ly/images/og-image.jpg',
+  ogUrl: 'https://altkamel.ly/',
+  ogType: 'website',
+  ogLocale: 'ar_LY',
+  twitterCard: 'summary_large_image',
+  twitterTitle: 'التكامل نت - خدمات الإنترنت والاتصالات',
+  twitterDescription: 'باقات إنترنت للمنازل والشركات في ليبيا. دعم 24/7.',
+  twitterImage: 'https://altkamel.ly/images/og-image.jpg',
+})
 </script>
 
 <template>

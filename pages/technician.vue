@@ -314,9 +314,17 @@
 import { generateAndDownloadCfg } from '~/assets/cfg-template.js'
 
 definePageMeta({ layout: false })
-useHead({
+
+// ✅ SEO كامل — يُولَّد كـ HTML ثابت عند البناء
+useSeoMeta({
   title: 'بوابة الفنيين — إعداد الأنتينا | التكامل نت',
-  meta: [{ name: 'description', content: 'توليد ملفات إعداد الأنتينات لفنيي شبكة التكامل نت' }]
+  description: 'أداة توليد ملفات إعداد الأنتينات (cfg.) لفنيي شبكة التكامل نت. تعمل بالكامل على جهازك دون إنترنت.',
+  ogTitle: 'بوابة الفنيين | التكامل نت',
+  ogDescription: 'أداة توليد ملفات إعداد الأنتينات لفنيي التكامل نت — توليد فوري، بدون إنترنت.',
+  ogImage: 'https://altkamel.ly/images/og-image.jpg',
+  ogUrl: 'https://altkamel.ly/technician',
+  ogType: 'website',
+  robots: 'noindex, nofollow',  // هذه الصفحة للفنيين فقط — لا نريد فهرستها
 })
 
 // ── مزايا الشريط الجانبي ──
