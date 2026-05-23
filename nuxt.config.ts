@@ -5,10 +5,10 @@ export default defineNuxtConfig({
   //    مثالي لـ cPanel shared hosting (Apache / LiteSpeed) مع nuxt generate
 
   // ✅ المتغيرات العامة (Runtime Config)
+  // 🔒 sasAesKey أُزيل من public بالكامل — المفتاح يعيش فقط في PHP Proxy على الخادم
+  //    راجع: public/sas-api/index.php → ثابت SAS_AES_KEY
   runtimeConfig: {
     public: {
-      // مفتاح AES لتشفير SASv4 — احفظه في .env: NUXT_PUBLIC_SAS_AES_KEY=xxxx
-      sasAesKey: '',
       // الـ CORS proxy يعمل عبر .htaccess (api-proxy.php في public_html)
       sasApiBase: '/sas-api',
     }

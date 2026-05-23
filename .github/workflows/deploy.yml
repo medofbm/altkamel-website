@@ -21,8 +21,6 @@ jobs:
       run: npm install
 
     - name: 🚀 Build Nuxt Project
-      env:
-        NUXT_PUBLIC_SAS_AES_KEY: ${{ secrets.NUXT_PUBLIC_SAS_AES_KEY }}
       run: npm run generate
 
     - name: 📂 Deploy to cPanel via LFTP

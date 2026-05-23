@@ -1,8 +1,11 @@
 /**
  * useSas.js - SASv4 User Portal API Composable
+ *
+ * 🔒 تم إزالة التشفير من الـ Frontend بالكامل
+ *    PHP Proxy على الخادم يتولى تشفير AES قبل إرسال الطلبات لـ SAS API
+ *    مفتاح AES لا يُرسل للمتصفح أبداً
  */
 
-import CryptoJS from 'crypto-js'
 import MSG from './sas-messages.json'
 
 // ✅ Capacitor تعمل فقط في بيئة Client — process.client يمنع تنفيذها على السيرفر
@@ -10,12 +13,6 @@ import { Capacitor } from '@capacitor/core'
 const BASE_URL = (process.client && Capacitor.isNativePlatform())
   ? 'https://altkamel.ly/sas-api'
   : '/sas-api'
-
-function encryptPayload(data, secretKey) {
-  const jsonStr = JSON.stringify(data)
-  const encrypted = CryptoJS.AES.encrypt(jsonStr, secretKey).toString()
-  return { payload: encrypted }
-}
 
 export function mbToGb(mb) {
   if (mb === null || mb === undefined || mb === '') return null
@@ -59,11 +56,10 @@ function translateError(result, fallbackKey) {
 }
 
 export function useSas() {
-  const config = useRuntimeConfig()
-  const AES_KEY = config.public.sasAesKey || ''
 
   async function login(username, password) {
-    const body = encryptPayload({ username, password, language: 'en' }, AES_KEY)
+    // 🔒 إرسال JSON خام — PHP Proxy يُشفّره بـ AES على الخادم
+    const body = { username, password, language: 'en' }
     try {
       const result = await sasRequest('/auth/login', { method: 'POST', body })
       if (result?.token) return { token: result.token }
@@ -133,7 +129,7 @@ export function useSas() {
   }
 
   async function getInvoices(token, { page = 1, count = 10, sortBy = 'id', direction = 'desc' } = {}) {
-    const body = encryptPayload({ page, count, sortBy, direction }, AES_KEY)
+    const body = { page, count, sortBy, direction }
     const result = await sasRequest('/index/invoice', { method: 'POST', body, token })
     if (result?.data) return { invoices: result.data, meta: { currentPage: result.current_page, total: result.total, lastPage: result.last_page } }
     if (result?._httpStatus === 401) return { error: MSG.session_expired, expired: true }
@@ -148,7 +144,7 @@ export function useSas() {
   }
 
   async function changeSubscription(token, newServiceId) {
-    const body = encryptPayload({ new_service: String(newServiceId), current_password: true }, AES_KEY)
+    const body = { new_service: String(newServiceId), current_password: true }
     const result = await sasRequest('/service', { method: 'POST', body, token })
     if (result?._httpStatus === 200) return { success: true, message: MSG.change_sub_success }
     if (result?._httpStatus === 401) return { error: MSG.session_expired, expired: true }
@@ -156,7 +152,7 @@ export function useSas() {
   }
 
   async function toggleAutoRenew(token, enable) {
-    const body = encryptPayload({ key: 'auto_renew', value: enable ? '1' : '0', current_password: true }, AES_KEY)
+    const body = { key: 'auto_renew', value: enable ? '1' : '0', current_password: true }
     let result
     try {
       result = await sasRequest('/user', { method: 'POST', body, token })
@@ -175,7 +171,7 @@ export function useSas() {
   async function redeemCode(token, pin) {
     let result
     try {
-      const body = encryptPayload({ pin: String(pin).trim() }, AES_KEY)
+      const body = { pin: String(pin).trim() }
       result = await sasRequest('/redeem', { method: 'POST', body, token })
     } catch {
       return { error: MSG.redeem_network_error }
@@ -195,7 +191,7 @@ export function useSas() {
 
   async function activateSubscription(token) {
     const uuid = crypto.randomUUID()
-    const body = encryptPayload({ uuid, current_password: true }, AES_KEY)
+    const body = { uuid, current_password: true }
     const result = await sasRequest('/user/activate', { method: 'POST', body, token })
     if (result?.message === 'rsp_success' || result?._httpStatus === 200)
       return { success: true, message: MSG.activate_success }
@@ -204,7 +200,7 @@ export function useSas() {
   }
 
   async function activateExtension(token, profileId) {
-    const body = encryptPayload({ profile_id: String(profileId), current_password: true }, AES_KEY)
+    const body = { profile_id: String(profileId), current_password: true }
     const result = await sasRequest('/user/extend', { method: 'POST', body, token })
     if (result?.message === 'rsp_success' || result?._httpStatus === 200)
       return { success: true, message: MSG.extension_success }
@@ -213,7 +209,7 @@ export function useSas() {
   }
 
   async function changePassword(token, newPassword, currentPassword) {
-    const body = encryptPayload({ key: 'password', value: newPassword, current_password: currentPassword }, AES_KEY)
+    const body = { key: 'password', value: newPassword, current_password: currentPassword }
     const result = await sasRequest('/user', { method: 'POST', body, token })
     if (result?.status === 200 || result?._httpStatus === 200)
       return { success: true, message: MSG.password_success }
