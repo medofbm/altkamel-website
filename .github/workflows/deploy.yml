@@ -20,7 +20,7 @@ jobs:
     - name: 📦 Install Dependencies
       run: npm install
 
-    - name: 🚀 Build Nuxt Project
+    - name: 🚀 Build Nuxt Project (Static Generate)
       run: npm run generate
 
     - name: 📂 Deploy to cPanel via LFTP
@@ -51,8 +51,14 @@ jobs:
         put -O / .output/public/404.html;
 
         # ══════════════════════════════════════════════════════════════════
-        # المرحلة 3 — المجلدات الفرعية (بدون حذف، آمن 100%)
-        # portal/ و about/ يحتويان صفحات Nuxt المولّدة
+        # المرحلة 3 — صفحة البث المباشر /live (مولَّدة ثابتة)
+        # ══════════════════════════════════════════════════════════════════
+        mkdir -p /live;
+        put -O /live/ .output/public/live/index.html;
+
+        # ══════════════════════════════════════════════════════════════════
+        # المرحلة 4 — المجلدات الفرعية (بدون حذف، آمن 100%)
+        # portal/ و about/ و live/ يحتويان صفحات Nuxt المولّدة
         # images/ و sas-api/ محمية تلقائياً (غير موجودة في البناء)
         # ══════════════════════════════════════════════════════════════════
         mirror --reverse --parallel=3 --ignore-time --no-perms \

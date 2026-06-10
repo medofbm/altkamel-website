@@ -19,6 +19,7 @@
     "@capacitor/share": "^8.0.1",
     "@capacitor/splash-screen": "^8.0.1",
     "crypto-js": "^4.2.0",
+    "hls.js": "^1.6.16",
     "html2pdf.js": "^0.14.0",
     "nuxt": "^3.13.2",
     "qrcode.vue": "^3.8.1",

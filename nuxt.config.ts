@@ -22,6 +22,7 @@ export default defineNuxtConfig({
       '/':           { prerender: true },
       '/about':      { prerender: true },
       '/technician': { prerender: true },
+      '/live':       { prerender: true },   // ✅ صفحة البث المباشر — كأس العالم 2026
 
       // ── صفحات البوابة الخاصة: Client-Side فقط (لا تحتاج SEO) ──
       '/portal':           { ssr: false },

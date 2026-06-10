@@ -43,12 +43,22 @@
 
       <!-- أزرار CTA -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up animate-delay-300">
+        <!-- زر البث المباشر — كأس العالم 2026 -->
+        <NuxtLink
+          to="/live"
+          class="inline-flex items-center gap-2 px-7 py-4 rounded-xl font-bold text-base bg-gradient-to-l from-red-600 to-pink-600 text-white shadow-xl hover:-translate-y-1 hover:shadow-2xl hover:from-red-500 hover:to-pink-500 transition-all duration-300 w-full sm:w-auto justify-center border border-white/10"
+        >
+          <span class="flex items-center gap-1.5">
+            <span class="w-2.5 h-2.5 bg-white rounded-full animate-ping absolute" />
+            <span class="w-2.5 h-2.5 bg-white rounded-full relative" />
+          </span>
+          🏆 بث مباشر — كأس العالم
+        </NuxtLink>
         <!-- زر تعبئة الرصيد الرئيسي -->
         <NuxtLink
           to="/portal/login"
-          class="inline-flex items-center gap-2 px-9 py-4 rounded-xl font-bold text-base bg-white text-indigo-700 shadow-xl hover:bg-gray-50 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 w-full sm:w-auto justify-center"
+          class="inline-flex items-center gap-2 px-7 py-4 rounded-xl font-bold text-base bg-white text-indigo-700 shadow-xl hover:bg-gray-50 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 w-full sm:w-auto justify-center"
         >
-          <!-- أيقونة محفظة / بطاقة شحن -->
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
           </svg>
@@ -57,7 +67,7 @@
         <!-- زر استعراض الخدمات -->
         <a
           href="#services"
-          class="inline-flex items-center gap-2 px-9 py-4 rounded-xl font-bold text-base text-white border-2 border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/60 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto justify-center"
+          class="inline-flex items-center gap-2 px-7 py-4 rounded-xl font-bold text-base text-white border-2 border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/60 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto justify-center"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>

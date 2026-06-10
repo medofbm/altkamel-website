@@ -82,6 +82,7 @@ useSeoMeta({
       </section>
       <!-- ===================================================== -->
 
+      <LiveStreamSection />
       <PackagesSection />
       <ContactSection />
     </main>
