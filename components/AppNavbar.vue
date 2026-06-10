@@ -79,11 +79,15 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
         <!-- زر البث المباشر - كأس العالم -->
         <NuxtLink
           to="/live"
-          class="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-bold transition-all duration-200 border bg-red-600/20 text-red-300 border-red-500/30 hover:bg-red-600/30 hover:text-red-200"
+          class="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-bold transition-all duration-200"
+          :class="isScrolled
+            ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100'
+            : 'text-indigo-200 border border-indigo-500/25 hover:border-indigo-400/40 hover:text-white'"
+          :style="!isScrolled ? 'background: rgba(67,56,202,0.12);' : ''"
         >
           <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-400" />
           </span>
           بث مباشر
         </NuxtLink>
@@ -152,12 +156,12 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
             <!-- زر البث المباشر موبايل -->
             <NuxtLink
               to="/live"
-              class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-red-300 bg-red-600/20 border border-red-500/30 hover:bg-red-600/30 transition-colors"
+              class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors"
               @click="closeMenu"
             >
               <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
               </span>
               🏆 البث المباشر — كأس العالم
             </NuxtLink>
