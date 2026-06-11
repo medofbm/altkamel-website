@@ -78,7 +78,7 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
       <div class="hidden md:flex items-center gap-2">
         <!-- زر البث المباشر - كأس العالم -->
         <a
-          href="http://172.16.6.102/"
+          href="https://172.16.6.102/"
           target="_blank"
           class="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-bold transition-all duration-200"
           :class="isScrolled
@@ -156,7 +156,7 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
           <li class="pt-2 space-y-2">
             <!-- زر البث المباشر موبايل -->
             <a
-              href="http://172.16.6.102/"
+              href="https://172.16.6.102/"
               target="_blank"
               class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors"
               @click="closeMenu"
