@@ -35,8 +35,9 @@
 
         <!-- زر الانتقال الوحيد -->
         <div class="relative z-10 flex justify-center">
-          <NuxtLink
-            to="/live"
+          <a
+            href="https://live.altkamel.ly"
+            target="_blank"
             class="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg text-white transition-all hover:scale-105"
             style="background: linear-gradient(135deg, #3820d0 0%, #0094b0 100%); box-shadow: 0 10px 30px rgba(67,56,202,0.4);"
           >
@@ -44,7 +45,7 @@
             <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>
-          </NuxtLink>
+          </a>
         </div>
 
       </div>

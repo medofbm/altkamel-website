@@ -77,8 +77,9 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
       <!-- أزرار البوابات Desktop -->
       <div class="hidden md:flex items-center gap-2">
         <!-- زر البث المباشر - كأس العالم -->
-        <NuxtLink
-          to="/live"
+        <a
+          href="https://live.altkamel.ly"
+          target="_blank"
           class="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-bold transition-all duration-200"
           :class="isScrolled
             ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100'
@@ -90,7 +91,7 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
             <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-400" />
           </span>
           بث مباشر
-        </NuxtLink>
+        </a>
         <!-- زر بوابة الفنيين -->
         <NuxtLink
           to="/technician"
@@ -154,8 +155,9 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
           </li>
           <li class="pt-2 space-y-2">
             <!-- زر البث المباشر موبايل -->
-            <NuxtLink
-              to="/live"
+            <a
+              href="https://live.altkamel.ly"
+              target="_blank"
               class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors"
               @click="closeMenu"
             >
@@ -164,7 +166,7 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
               </span>
               🏆 البث المباشر — كأس العالم
-            </NuxtLink>
+            </a>
             <!-- زر بوابة الفنيين موبايل -->
             <NuxtLink
               to="/technician"
