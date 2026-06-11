@@ -36,7 +36,7 @@
         <!-- زر الانتقال الوحيد -->
         <div class="relative z-10 flex justify-center">
           <a
-            href="https://live.altkamel.ly"
+            href="http://172.16.6.102/"
             target="_blank"
             class="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg text-white transition-all hover:scale-105"
             style="background: linear-gradient(135deg, #3820d0 0%, #0094b0 100%); box-shadow: 0 10px 30px rgba(67,56,202,0.4);"
