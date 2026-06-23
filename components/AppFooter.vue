@@ -6,7 +6,7 @@ const quickLinks = [
   { label: 'نبذة عنا',   href: '/about',   isRoute: true },
   { label: 'خدماتنا',    href: '/#services', isRoute: false },
   { label: 'باقاتنا',    href: '/#packages', isRoute: false },
-  { label: '🏆 البث المباشر', href: 'https://tv.altkamel.ly/',   isRoute: false },
+  { label: '🏆 البث المباشر', href: 'https://tv.altkamel.ly',   isRoute: false },
   { label: 'تواصل معنا', href: '/#contact',  isRoute: false },
 ]
 
