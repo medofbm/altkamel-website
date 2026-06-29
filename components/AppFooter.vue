@@ -1,12 +1,13 @@
 <script setup>
 // ✅ AppFooter - التذييل بالبيانات الرسمية + روابط السوشيال الحقيقية
+const { openStream } = useStreamUrl()
 
 const quickLinks = [
   { label: 'الرئيسية',   href: '/',        isRoute: true },
   { label: 'نبذة عنا',   href: '/about',   isRoute: true },
   { label: 'خدماتنا',    href: '/#services', isRoute: false },
   { label: 'باقاتنا',    href: '/#packages', isRoute: false },
-  { label: '🏆 البث المباشر', href: 'https://tv.altkamel.ly',   isRoute: false },
+  { label: '🏆 البث المباشر', href: null, isRoute: false, isStream: true },
   { label: 'تواصل معنا', href: '/#contact',  isRoute: false },
 ]
 
@@ -96,7 +97,7 @@ const socials = [
         <div>
           <h4 class="font-bold text-white mb-5 text-base">روابط سريعة</h4>
           <ul class="space-y-3">
-            <li v-for="link in quickLinks" :key="link.href">
+            <li v-for="link in quickLinks" :key="link.label">
               <NuxtLink
                 v-if="link.isRoute"
                 :to="link.href"
@@ -107,6 +108,18 @@ const socials = [
                 </svg>
                 {{ link.label }}
               </NuxtLink>
+              <!-- زر البث المباشر — كشف الجهاز لإرسال HTTP للتلفزيونات الذكية -->
+              <button
+                v-else-if="link.isStream"
+                type="button"
+                @click="openStream"
+                class="text-gray-400 hover:text-cyan-400 transition-colors duration-200 text-sm font-medium flex items-center gap-2 group cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5 text-indigo-500 group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                {{ link.label }}
+              </button>
               <a
                 v-else
                 :href="link.href"

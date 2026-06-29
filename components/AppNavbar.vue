@@ -1,5 +1,7 @@
 <script setup>
 // ✅ AppNavbar - شريط التنقل (شفاف → أبيض عند Scroll)
+const { openStream } = useStreamUrl()
+
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
 
@@ -77,10 +79,10 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
       <!-- أزرار البوابات Desktop -->
       <div class="hidden md:flex items-center gap-2">
         <!-- زر البث المباشر - كأس العالم -->
-        <a
-          href="https://tv.altkamel.ly"
-          target="_blank"
-          class="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-bold transition-all duration-200"
+        <button
+          type="button"
+          @click="openStream"
+          class="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-xl font-bold transition-all duration-200 cursor-pointer"
           :class="isScrolled
             ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100'
             : 'text-indigo-200 border border-indigo-500/25 hover:border-indigo-400/40 hover:text-white'"
@@ -91,7 +93,7 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
             <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-400" />
           </span>
           بث مباشر
-        </a>
+        </button>
         <!-- زر بوابة الفنيين -->
         <NuxtLink
           to="/technician"
@@ -155,18 +157,17 @@ const closeMenu = () => { isMobileMenuOpen.value = false }
           </li>
           <li class="pt-2 space-y-2">
             <!-- زر البث المباشر موبايل -->
-            <a
-              href="https://tv.altkamel.ly"
-              target="_blank"
-              class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors"
-              @click="closeMenu"
+            <button
+              type="button"
+              class="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-bold text-sm text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 transition-colors cursor-pointer"
+              @click="openStream(); closeMenu()"
             >
               <span class="relative flex h-2 w-2">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-60" />
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
               </span>
               🏆 البث المباشر — كأس العالم
-            </a>
+            </button>
             <!-- زر بوابة الفنيين موبايل -->
             <NuxtLink
               to="/technician"
