@@ -45,7 +45,7 @@
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up animate-delay-300">
         <!-- زر البث المباشر — كأس العالم 2026 -->
         <a
-          href="https://tv.altkamel.ly"
+          href="tv.altkamel.ly"
           target="_blank"
           class="inline-flex items-center gap-2 px-7 py-4 rounded-xl font-bold text-base bg-gradient-to-l from-red-600 to-pink-600 text-white shadow-xl hover:-translate-y-1 hover:shadow-2xl hover:from-red-500 hover:to-pink-500 transition-all duration-300 w-full sm:w-auto justify-center border border-white/10"
         >
