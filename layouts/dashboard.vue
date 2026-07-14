@@ -33,14 +33,26 @@
 
         <NuxtLink href="/portal/dashboard"
           class="nav-item group flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm transition-all duration-200"
-          :class="$route.path.startsWith('/portal/dashboard') ? 'nav-item-active text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'"
+          :class="$route.path === '/portal/dashboard' ? 'nav-item-active text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'"
         >
           <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200"
-            :class="$route.path.startsWith('/portal/dashboard') ? 'bg-indigo-500 shadow-md shadow-indigo-500/40' : 'bg-white/5 group-hover:bg-white/10'">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            :class="$route.path === '/portal/dashboard' ? 'bg-indigo-500 shadow-md shadow-indigo-500/40' : 'bg-white/5 group-hover:bg-white/10'">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           </div>
-          <span class="flex-1 text-sm">لوحة التحكم</span>
-          <span v-if="$route.path.startsWith('/portal/dashboard')" class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+          <span class="flex-1 text-sm">معلومات عامة</span>
+          <span v-if="$route.path === '/portal/dashboard'" class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+        </NuxtLink>
+
+        <NuxtLink href="/portal/packages"
+          class="nav-item group flex items-center gap-3 px-3 py-2.5 rounded-xl font-bold text-sm transition-all duration-200"
+          :class="$route.path === '/portal/packages' ? 'nav-item-active text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'"
+        >
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200"
+            :class="$route.path === '/portal/packages' ? 'bg-violet-500 shadow-md shadow-violet-500/40' : 'bg-white/5 group-hover:bg-white/10'">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+          </div>
+          <span class="flex-1 text-sm">الباقات المتاحة</span>
+          <span v-if="$route.path === '/portal/packages'" class="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse"></span>
         </NuxtLink>
 
         <div class="pt-3">
@@ -164,16 +176,28 @@
 
       <div class="flex items-center justify-around px-2 py-2 pb-safe">
 
-        <!-- حسابي -->
+        <!-- معلومات عامة -->
         <NuxtLink href="/portal/dashboard"
           class="flex flex-col items-center gap-1 px-5 py-2 rounded-2xl transition-all duration-200"
-          :class="$route.path.startsWith('/portal/dashboard') ? 'bottom-nav-active' : 'text-slate-500'"
+          :class="$route.path === '/portal/dashboard' ? 'bottom-nav-active' : 'text-slate-500'"
         >
           <div class="relative">
-            <svg class="w-5 h-5 transition-transform duration-200" :class="$route.path.startsWith('/portal/dashboard') ? 'text-indigo-400 scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-            <span v-if="$route.path.startsWith('/portal/dashboard')" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-indigo-400 border-2 border-[#0c1220]"></span>
+            <svg class="w-5 h-5 transition-transform duration-200" :class="$route.path === '/portal/dashboard' ? 'text-indigo-400 scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <span v-if="$route.path === '/portal/dashboard'" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-indigo-400 border-2 border-[#0c1220]"></span>
           </div>
-          <span class="text-[10px] font-black leading-none" :class="$route.path.startsWith('/portal/dashboard') ? 'text-indigo-300' : ''">حسابي</span>
+          <span class="text-[10px] font-black leading-none" :class="$route.path === '/portal/dashboard' ? 'text-indigo-300' : ''">حسابي</span>
+        </NuxtLink>
+
+        <!-- الباقات -->
+        <NuxtLink href="/portal/packages"
+          class="flex flex-col items-center gap-1 px-5 py-2 rounded-2xl transition-all duration-200"
+          :class="$route.path === '/portal/packages' ? 'bottom-nav-active' : 'text-slate-500'"
+        >
+          <div class="relative">
+            <svg class="w-5 h-5 transition-transform duration-200" :class="$route.path === '/portal/packages' ? 'text-violet-400 scale-110' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+            <span v-if="$route.path === '/portal/packages'" class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-violet-400 border-2 border-[#0c1220]"></span>
+          </div>
+          <span class="text-[10px] font-black leading-none" :class="$route.path === '/portal/packages' ? 'text-violet-300' : ''">الباقات</span>
         </NuxtLink>
 
         <!-- دعم فني -->

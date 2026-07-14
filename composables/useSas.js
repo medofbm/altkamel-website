@@ -110,27 +110,13 @@ export function useSas() {
     return { error: translateError(result, 'fetch_balance_error') }
   }
 
-  async function getUserTraffic(token, month, year) {
+  async function getUserTraffic(token) {
     try {
-      const now = new Date()
-      const body = {
-        report_type: 'daily',
-        month: month ?? (now.getMonth() + 1),
-        year: year ?? now.getFullYear(),
-        user_id: null,
-      }
-      const result = await sasRequest('/traffic', { method: 'POST', body, token })
+      const result = await sasRequest('/user/traffic', { token })
       if (result?.data) {
-        const d = result.data
-        // API returns arrays of 30 daily values — sum them for monthly total
-        const sumArray = (arr) => Array.isArray(arr) ? arr.reduce((a, b) => a + Number(b || 0), 0) : null
-        const rxMb  = sumArray(d.rx)
-        const txMb  = sumArray(d.tx)
-        return { data: { rx_mb: rxMb, tx_mb: txMb } }
+        return { data: { rx_mb: result.data.rx_mb ?? result.data.download ?? null, tx_mb: result.data.tx_mb ?? result.data.upload ?? null } }
       }
-    } catch (e) {
-      console.warn('[SAS Traffic] endpoint error:', e)
-    }
+    } catch { /* endpoint not available */ }
     return { data: null }
   }
 
