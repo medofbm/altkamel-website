@@ -439,6 +439,10 @@
             <h2 class="font-black text-slate-900 text-base">البيانات المستهلكة</h2>
             <p class="text-[11px] text-slate-400 font-bold">إحصائيات الاستهلاك للدورة الحالية</p>
           </div>
+          <!-- زر تحديث الترافيك -->
+          <button @click="loadTraffic" class="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-cyan-600 transition-colors border border-slate-100 flex-shrink-0" title="تحديث البيانات">
+            <svg :class="{'animate-spin': trafficLoading}" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
         </div>
         <div class="p-5">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" dir="rtl">
