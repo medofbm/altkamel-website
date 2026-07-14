@@ -80,744 +80,528 @@
         </div>
       </div>
 
-      <!-- بطاقتا الرصيد والأيام المتبقية — صف على الموبايل -->
-      <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
-
-        <!-- بطاقة الرصيد — الهوية الرسمية للتكامل نت -->
-        <div
-          class="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden col-span-1 cursor-default"
-          style="background: linear-gradient(135deg, #2B32B2 0%, #1488CC 100%);"
+      <!-- ===== Tabs ===== -->
+      <div class="flex gap-2 bg-slate-100/80 rounded-2xl p-1.5">
+        <button
+          @click="activeTab = 'home'"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all duration-200"
+          :class="activeTab === 'home' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
         >
-          <!-- خلفية زخرفية -->
-          <div class="absolute inset-0 pointer-events-none overflow-hidden">
-            <div class="absolute -top-8 -right-8 w-36 h-36 bg-white/10 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
-            <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle, white 1.5px, transparent 1.5px); background-size: 20px 20px;"></div>
-          </div>
-          <div class="relative z-10">
-            <!-- الهيدر -->
-            <div class="flex items-center justify-between mb-2 sm:mb-3">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center">
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-              </div>
-              <span class="text-white/60 font-bold text-[9px] sm:text-xs bg-white/10 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">رصيد</span>
-            </div>
-            <!-- الرصيد -->
-            <div class="text-2xl sm:text-4xl font-black text-white mb-0.5 sm:mb-1 tracking-tight leading-none">{{ balanceData.balance }}</div>
-            <div class="text-white/50 text-[9px] sm:text-xs font-bold mb-3 sm:mb-4">د.ل · الآن</div>
-            <!-- زر إضافة الرصيد — CTA -->
-            <button
-              @click="openModal('redeem')"
-              class="inline-flex items-center gap-1.5 bg-white/15 hover:bg-white/25 border border-white/25 hover:border-white/40 text-white font-black text-[10px] sm:text-xs px-4 py-3 rounded-xl transition-all active:scale-95 backdrop-blur-sm"
-            >
-              <span class="text-base leading-none">+</span>
-              إضافة رصيد
-            </button>
-            <!-- تحذير فواتير -->
-            <div v-if="Number(balanceData.unpaid_invoices) > 0" class="mt-2.5 flex items-center gap-1.5 bg-red-500/20 border border-red-400/30 rounded-lg px-2 py-1.5">
-              <svg class="w-3 h-3 text-red-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span class="text-red-200 text-[9px] sm:text-xs font-black">{{ balanceData.unpaid_invoices }} فاتورة غير مدفوعة</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- بطاقة الأيام المتبقية -->
-        <div class="relative bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-md overflow-hidden">
-          <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-100/50 rounded-full blur-2xl pointer-events-none"></div>
-          <div class="relative z-10">
-            <div class="flex items-center justify-between mb-2 sm:mb-3">
-              <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg,#168A7D,#10B982);">
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              </div>
-              <span :class="daysUrgency.badge" class="text-[9px] sm:text-xs font-black px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full">{{ daysUrgency.text }}</span>
-            </div>
-            <div class="text-2xl sm:text-4xl font-black text-slate-900 mb-0.5 tracking-tight leading-none">
-              {{ balanceData.remaining_days }} <span class="text-sm sm:text-lg font-bold text-slate-300">يوم</span>
-            </div>
-            <div class="text-slate-400 font-bold text-[9px] sm:text-xs mb-2 sm:mb-3">متبقية للانتهاء</div>
-            <div class="h-1.5 sm:h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div :style="`width:${daysPercent}%`" :class="daysUrgency.bar" class="h-full rounded-full transition-all duration-700"></div>
-            </div>
-          </div>
-        </div>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          <span class="hidden sm:inline">معلومات عامة</span>
+          <span class="sm:hidden">حسابي</span>
+        </button>
+        <button
+          @click="activeTab = 'packages'"
+          class="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all duration-200"
+          :class="activeTab === 'packages' ? 'bg-white text-violet-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+          <span class="hidden sm:inline">الباقات المتاحة</span>
+          <span class="sm:hidden">الباقات</span>
+        </button>
       </div>
 
-      <!-- إحصائيات وقت الاتصال والحركة المتبقية -->
-      <div v-if="balanceData.remaining_traffic !== '_' || balanceData.remaining_uptime !== '_'" class="grid grid-cols-2 gap-3">
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-500 flex-shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- ===== Tab: معلومات عامة ============================= -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <template v-if="activeTab === 'home'">
+
+        <!-- بطاقتان: الأيام + الرصيد -->
+        <div class="grid grid-cols-2 gap-3 sm:gap-4">
+
+          <!-- الأيام المتبقية -->
+          <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl p-4 sm:p-5 border" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border-color: rgba(99,102,241,0.3);">
+            <div class="absolute top-0 left-0 w-32 h-32 rounded-full opacity-10 -translate-x-1/2 -translate-y-1/2" style="background: white;"></div>
+            <p class="text-indigo-200 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1.5">الأيام المتبقية</p>
+            <div class="text-3xl sm:text-4xl font-black text-white leading-none mb-1">{{ balanceData.remaining_days }}</div>
+            <p class="text-indigo-200 text-[10px] sm:text-xs font-bold">من 30 يوم</p>
+            <div class="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden">
+              <div class="h-full bg-white/80 rounded-full transition-all duration-700" :style="`width: ${daysPercent}%`"></div>
+            </div>
           </div>
-          <div>
-            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">التحميل المتبقي</div>
-            <div class="text-sm font-black text-slate-800">{{ balanceData.remaining_traffic !== '_' ? balanceData.remaining_traffic : 'غير محدود' }}</div>
+
+          <!-- الرصيد -->
+          <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl p-4 sm:p-5 bg-white border border-slate-100 shadow-sm">
+            <div class="absolute top-0 left-0 w-24 h-24 rounded-full opacity-5 -translate-x-1/2 -translate-y-1/2" style="background: #6366f1;"></div>
+            <p class="text-slate-400 text-[10px] sm:text-xs font-black uppercase tracking-widest mb-1.5">الرصيد</p>
+            <div class="flex items-baseline gap-1">
+              <span class="text-3xl sm:text-4xl font-black text-slate-900 leading-none">{{ Number(balanceData.balance).toFixed(0) }}</span>
+              <span class="text-xs sm:text-sm font-black text-slate-400">د.ل</span>
+            </div>
+            <p class="text-slate-400 text-[10px] sm:text-xs font-bold mt-1">{{ balanceData.unpaid_invoices > 0 ? `${balanceData.unpaid_invoices} فاتورة غير مدفوعة` : 'لا توجد فواتير معلقة' }}</p>
           </div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-500 flex-shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <div>
-            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">وقت الاتصال</div>
-            <div class="text-sm font-black text-slate-800">{{ balanceData.remaining_uptime !== '_' ? balanceData.remaining_uptime : 'غير محدود' }}</div>
-          </div>
-        </div>
-      </div>
 
-      <!-- الإجراءات السريعة -->
-      <div>
-        <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">الإجراءات السريعة</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <button @click="openModal('redeem')" id="btn-redeem" class="group flex flex-col items-center gap-2 p-4 bg-white hover:bg-blue-50 border border-slate-100 hover:border-blue-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97]">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2B32B2,#1488CC);">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-            </div>
-            <span class="text-xs font-black text-slate-700 text-center leading-tight">تعبئة رصيد</span>
-          </button>
-          <button @click="openModal('activate')" id="btn-activate" class="group flex flex-col items-center gap-2 p-4 bg-white hover:bg-emerald-50 border border-slate-100 hover:border-emerald-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97]">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white" style="background:linear-gradient(135deg,#168A7D,#10B982);">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <span class="text-xs font-black text-slate-700 text-center leading-tight">تفعيل الاشتراك</span>
-          </button>
-          <a href="https://wa.me/218923339798" target="_blank" class="group flex flex-col items-center gap-2 p-4 bg-white hover:bg-green-50 border border-slate-100 hover:border-green-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200">
-            <div class="w-10 h-10 rounded-xl bg-green-100 group-hover:bg-green-200 flex items-center justify-center text-green-600 transition-colors">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-            </div>
-            <span class="text-xs font-black text-slate-700 text-center leading-tight">الدعم الفني</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- بيانات الحساب والاشتراك -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-        <!-- معلومات الاشتراك -->
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-          <div class="p-4 sm:p-5 border-b border-slate-50 flex items-center justify-start gap-3 sm:gap-4" dir="rtl">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-indigo-900 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
-              <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <div class="text-right flex-1">
-              <h2 class="font-black text-slate-900 text-sm sm:text-base">معلومات الاشتراك</h2>
-              <p class="text-[10px] sm:text-[11px] text-slate-400 font-bold">تفاصيل وحالة الخدمة</p>
-            </div>
-          </div>
-          <div class="p-4 sm:p-5 grid grid-cols-2 gap-x-3 sm:gap-x-4 gap-y-4 sm:gap-y-5 flex-1 content-start">
-
-            <!-- الخدمة الحالية -->
-            <div class="col-span-2">
-              <div class="text-[10px] sm:text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">الخدمة الحالية</div>
-              <div class="text-xs font-black text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-right">
-                {{ currentPackageName }}
+        <!-- بطاقة الباقة الحالية -->
+        <div class="rounded-2xl sm:rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+          <div class="h-1 w-full" style="background: linear-gradient(90deg, #6366f1, #06b6d4);"></div>
+          <div class="p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-3 mb-4">
+              <div>
+                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">الباقة الحالية</p>
+                <h2 class="text-base sm:text-xl font-black text-slate-900">{{ currentPackageName }}</h2>
+                <p v-if="currentPackage?.price" class="text-slate-500 text-xs sm:text-sm font-bold mt-0.5">LD {{ currentPackage.price }} / شهر</p>
               </div>
-            </div>
-
-            <!-- حالة الاشتراك -->
-            <div class="col-span-1">
-              <div class="text-[10px] sm:text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">الحالة</div>
-              <div
-                class="text-[11px] sm:text-xs font-black rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-right"
-                :class="isAccountActive ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' : 'text-rose-700 bg-rose-50 border border-rose-100'"
-              >
-                {{ isAccountActive ? 'فعّال ✓' : 'منتهي' }}
+              <!-- تغيير الباقة dropdown -->
+              <div class="relative flex-shrink-0">
+                <button
+                  @click="pkgDropOpen = !pkgDropOpen"
+                  class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 transition-all active:scale-95"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                  تغيير
+                </button>
+                <Transition name="drop-fade">
+                  <div v-if="pkgDropOpen"
+                    class="absolute left-0 top-full mt-2 w-60 bg-white border border-slate-200 rounded-2xl shadow-xl z-20 overflow-hidden py-1.5">
+                    <p class="px-3 py-1.5 text-[9px] font-black text-slate-400 uppercase tracking-widest">اختر باقة جديدة</p>
+                    <template v-if="packagesList.length">
+                      <button
+                        v-for="pkg in packagesList"
+                        :key="pkg.id"
+                        @click="confirmPkgChange(pkg)"
+                        class="w-full flex items-center justify-between px-3 py-2.5 text-right hover:bg-slate-50 transition-colors"
+                        :class="String(pkg.id) === String(userData.profile_id) ? 'text-indigo-600 bg-indigo-50/50' : 'text-slate-700'"
+                      >
+                        <span class="text-xs font-black">{{ pkg.name }}</span>
+                        <div class="flex items-center gap-2">
+                          <span class="text-[10px] font-bold text-slate-400">LD {{ pkg.price }}</span>
+                          <svg v-if="String(pkg.id) === String(userData.profile_id)" class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                      </button>
+                    </template>
+                    <p v-else class="px-3 py-3 text-xs text-slate-400 text-center">جارٍ التحميل...</p>
+                  </div>
+                </Transition>
               </div>
-            </div>
-
-            <!-- سعر الخدمة -->
-            <div class="col-span-1">
-              <div class="text-[10px] sm:text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">سعر الخدمة</div>
-              <div class="text-[11px] sm:text-xs font-black text-slate-700 bg-slate-50 border border-slate-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-right">{{ currentPackagePrice > 0 ? `LD ${currentPackagePrice}` : 'غير محدد' }}</div>
             </div>
 
             <!-- تاريخ الانتهاء -->
-            <div class="col-span-2 border-t border-slate-50 pt-3">
-              <div class="text-[10px] sm:text-[11px] font-black text-slate-400 mb-1 text-right">تاريخ الانتهاء</div>
-              <div class="font-bold text-slate-600 text-xs sm:text-sm text-right">{{ expirationDate }}</div>
+            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 mb-4">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center">
+                  <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-wide">تاريخ الانتهاء</p>
+                  <p class="text-xs font-black text-slate-700">{{ expirationDate }}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-black" :class="daysUrgency.badge">
+                {{ daysUrgency.text }}
+              </div>
             </div>
 
             <!-- التجديد التلقائي -->
-            <div class="col-span-2">
-              <div class="text-[10px] sm:text-[11px] font-black text-slate-400 mb-1.5 text-right">التجديد التلقائي</div>
-              <div class="flex items-center justify-between bg-slate-50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 border border-slate-100">
-                <span class="text-[11px] sm:text-xs font-bold text-slate-600">
-                  {{ userData.auto_renew ? 'مفعّل — تلقائي' : 'معطّل — يدوي' }}
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs font-black text-slate-700">التجديد التلقائي</p>
+                <p class="text-[10px] text-slate-400 font-medium mt-0.5">تجديد تلقائي عند انتهاء الاشتراك</p>
+              </div>
+              <button
+                @click="handleAutoRenewToggle"
+                :disabled="autoRenewLoading"
+                class="relative w-12 h-6 rounded-full transition-all duration-300 focus:outline-none disabled:opacity-60"
+                :class="userData.auto_renew ? 'bg-indigo-500' : 'bg-slate-200'"
+              >
+                <span v-if="autoRenewLoading" class="absolute inset-0 flex items-center justify-center">
+                  <svg class="animate-spin h-3 w-3 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
                 </span>
-                <button
-                  id="btn-auto-renew"
-                  @click="handleAutoRenewToggle"
-                  :disabled="autoRenewLoading"
-                  class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-60"
-                  :class="userData.auto_renew ? 'bg-indigo-600' : 'bg-slate-200'"
-                  role="switch"
-                >
-                  <span class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200"
-                    :class="userData.auto_renew ? '-translate-x-5' : 'translate-x-0'"
-                  ></span>
-                </button>
-              </div>
-            </div>
-
-            <!-- IP الثابت -->
-            <div class="col-span-2">
-              <div class="text-[10px] sm:text-[11px] font-black text-slate-400 mb-1 text-right">IP الثابت</div>
-              <div class="font-bold text-slate-700 text-xs sm:text-sm font-mono text-right" dir="ltr">{{ userData.static_ip || 'n/a' }}</div>
-            </div>
-
-            <!-- ─── زر تغيير الباقة ─── -->
-            <div class="col-span-2 border-t border-slate-50 pt-3">
-              <div class="text-[10px] sm:text-[11px] font-black text-slate-400 mb-2 text-right">تغيير الباقة</div>
-
-              <!-- الحاوي relative لضمان وضع القائمة كـ absolute بدون تحريك الصفحة -->
-              <div class="relative">
-                <!-- الزر الرئيسي -->
-                <button
-                  @click="pkgDropOpen = !pkgDropOpen"
-                  class="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-l from-violet-50 to-indigo-50 border border-indigo-200 hover:border-indigo-400 rounded-xl transition-all group"
-                >
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0">
-                      <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                    </div>
-                    <span class="text-[11px] sm:text-xs font-black text-indigo-700">اختر باقة جديدة</span>
-                  </div>
-                  <svg class="w-4 h-4 text-indigo-400 transition-transform duration-200" :class="pkgDropOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </button>
-
-              <!-- ─── القائمة المنسدلة — تطفو إلى الأعلى ─── -->
-              <Transition name="drop-fade">
-                <div
-                  v-if="pkgDropOpen"
-                  class="absolute right-0 left-0 bottom-full mb-2 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-50"
-                  style="box-shadow: 0 -20px 60px -10px rgba(99,102,241,.18), 0 -8px 24px rgba(0,0,0,.1);"
-                >
-                  <!-- عنوان -->
-                  <div class="px-3 py-2 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
-                    <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-wider">الباقات المتاحة</span>
-                    <div class="flex-1"></div>
-                    <button @click="pkgDropOpen = false" class="w-5 h-5 rounded-md bg-slate-200 hover:bg-red-100 flex items-center justify-center text-slate-500 hover:text-red-600 transition-colors">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
-                  </div>
-                  <div class="max-h-56 overflow-y-auto divide-y divide-slate-50">
-                    <button
-                      v-for="pkg in packagesList"
-                      :key="pkg.id"
-                      @click="confirmPkgChange(pkg)"
-                      class="w-full flex items-center justify-between px-4 py-3 hover:bg-indigo-50 transition-colors group text-right"
-                      :class="String(pkg.id) === String(userData.profile_id) ? 'bg-indigo-50/70' : ''"
-                    >
-                      <div class="flex items-center gap-2.5 flex-1 min-w-0">
-                        <div
-                          class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-black leading-none"
-                          :class="String(pkg.id) === String(userData.profile_id) ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-indigo-100'"
-                        >
-                          <span v-if="pkg.speed_download && Number(pkg.speed_download) > 0">
-                            {{ Number(pkg.speed_download) >= 1000 ? Math.round(pkg.speed_download/1000)+'G' : pkg.speed_download+'M' }}
-                          </span>
-                          <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </div>
-                        <div class="text-right min-w-0">
-                          <div class="text-xs font-black text-slate-800 truncate">{{ pkg.name }}</div>
-                          <div class="text-[10px] text-slate-400 font-bold">
-                            {{ pkg.speed_download && Number(pkg.speed_download) > 0 ? pkg.speed_download + ' Mbps' : 'سرعة متغيرة' }}
-                          </div>
-                        </div>
-                      </div>
-                      <div class="flex items-center gap-2 flex-shrink-0">
-                        <span class="text-xs font-black" :class="String(pkg.id) === String(userData.profile_id) ? 'text-indigo-600' : 'text-slate-700'">{{ pkg.price ? `LD ${pkg.price}` : '—' }}</span>
-                        <svg v-if="String(pkg.id) === String(userData.profile_id)" class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                        <svg v-else class="w-3.5 h-3.5 text-slate-200 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                      </div>
-                    </button>
-                    <div v-if="!packagesList.length" class="px-4 py-6 text-center text-xs font-bold text-slate-400">
-                      لا توجد باقات متاحة حالياً
-                    </div>
-                  </div>
-                  <div class="px-3 py-2 bg-slate-50 border-t border-slate-100">
-                    <p class="text-[9px] text-slate-400 font-bold text-center">سيتم تغيير الباقة مباشرةً عبر نظام الساس</p>
-                  </div>
-                </div>
-              </Transition>
-              </div><!-- end relative wrapper -->
-            </div>
-
-          </div>
-        </div>
-
-        <!-- معلومات العميل -->
-        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-          <div class="p-5 border-b border-slate-50 flex items-center justify-start gap-4" dir="rtl">
-            <div class="w-11 h-11 rounded-2xl bg-[#111827] flex items-center justify-center text-white flex-shrink-0 shadow-sm">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-            </div>
-            <div class="text-right flex-1">
-              <h2 class="font-black text-slate-900 text-base">معلومات العميل</h2>
-              <p class="text-[11px] text-slate-400 font-bold">البيانات الشخصية والحساب</p>
-            </div>
-          </div>
-          <div class="p-5 grid grid-cols-2 gap-x-4 gap-y-5 flex-1 content-start">
-
-            <!-- رمز الدخول = رقم الهاتف -->
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">رمز الدخول</div>
-              <div class="text-sm font-black text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-right font-mono truncate" :title="userData.phone || userData.username">{{ userData.phone || userData.username || '—' }}</div>
-            </div>
-
-            <!-- الاسم الكامل — بدون حذف -->
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">الاسم الكامل</div>
-              <div class="text-sm font-black text-slate-800 bg-slate-50 rounded-xl px-4 py-3 text-right break-words whitespace-normal leading-snug">{{ displayName || '—' }}</div>
-            </div>
-
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">اسم المستخدم</div>
-              <div class="text-sm font-black text-slate-800 bg-slate-50 rounded-xl px-4 py-3 text-right truncate" :title="userData.username || '—'">{{ userData.username || '—' }}</div>
-            </div>
-
-
-
-            <!-- تاريخ التسجيل -->
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">تاريخ التسجيل</div>
-              <div class="text-sm font-black text-slate-600 bg-slate-50 rounded-xl px-4 py-3 text-right">{{ registeredDate }}</div>
-            </div>
-
-            <!-- رصيد الحساب -->
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1 text-right">رصيد الحساب</div>
-              <div class="font-bold text-slate-700 text-sm text-right">LD {{ balanceData.balance || '0.00' }}</div>
-            </div>
-
-            <!-- الفواتير غير المدفوعة -->
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1 text-right">فواتير غير مدفوعة</div>
-              <div class="font-bold text-sm text-right" :class="Number(balanceData.unpaid_invoices) > 0 ? 'text-rose-600' : 'text-slate-500'">
-                {{ balanceData.unpaid_invoices || 0 }}
-              </div>
-            </div>
-
-            <!-- الهاتف -->
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1 text-right">الهاتف</div>
-              <div class="font-bold text-slate-800 text-sm text-right" dir="ltr">{{ userData.phone || 'غير متوفر' }}</div>
-            </div>
-
-            <!-- البريد الإلكتروني -->
-            <div>
-              <div class="text-[11px] font-black text-slate-400 mb-1 text-right">البريد الإلكتروني</div>
-              <div class="font-bold text-slate-600 text-sm text-right truncate" :title="userData.email">{{ userData.email || 'N/A' }}</div>
-            </div>
-
-            <!-- رقم العقد -->
-            <div class="col-span-2 mt-2">
-              <div class="text-[11px] font-black text-slate-400 mb-1.5 text-right px-1">رقم العقد</div>
-              <button @click="openModal('contract')" class="w-full group flex items-center justify-between px-4 py-3 bg-white hover:bg-slate-50 border border-slate-100 hover:border-slate-300 rounded-xl transition-all duration-200">
-                <span class="font-bold text-slate-600 group-hover:text-slate-900 transition-colors text-sm text-right flex-1 truncate">{{ userData.contract || userData.contract_number || 'عرض وتنزيل العقد' }}</span>
-                <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-black text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity">تنزيل العقد</span>
-                  <div class="w-8 h-8 rounded-lg bg-slate-50 group-hover:bg-indigo-50 flex items-center justify-center text-slate-400 group-hover:text-indigo-600 transition-colors border border-transparent group-hover:border-indigo-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                  </div>
-                </div>
+                <span v-else class="absolute top-0.5 transition-all duration-300 w-5 h-5 bg-white rounded-full shadow-sm"
+                  :class="userData.auto_renew ? 'right-0.5' : 'left-0.5'"></span>
               </button>
             </div>
-
           </div>
         </div>
 
-      </div>
-
-      <!-- ===== بيانات الاستهلاك ===== -->
-      <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-        <div class="p-5 border-b border-slate-50 flex items-center justify-start gap-4" dir="rtl">
-          <div class="w-11 h-11 rounded-2xl bg-cyan-900 flex items-center justify-center text-white flex-shrink-0 shadow-sm">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        <!-- بطاقة الاستهلاك -->
+        <div class="rounded-2xl sm:rounded-3xl bg-white border border-slate-100 shadow-sm p-4 sm:p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-black text-slate-900">استهلاك الشبكة</h3>
+            <span class="text-[10px] font-black text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">الشهر الحالي</span>
           </div>
-          <div class="text-right flex-1">
-            <h2 class="font-black text-slate-900 text-base">البيانات المستهلكة</h2>
-            <p class="text-[11px] text-slate-400 font-bold">إحصائيات الاستهلاك للدورة الحالية</p>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="text-center p-3 rounded-xl bg-sky-50 border border-sky-100">
+              <svg class="w-5 h-5 text-sky-500 mx-auto mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <p class="text-[10px] font-black text-sky-600">تنزيل</p>
+              <p class="text-sm font-black text-slate-900 mt-0.5">{{ trafficStats.download }}</p>
+            </div>
+            <div class="text-center p-3 rounded-xl bg-violet-50 border border-violet-100">
+              <svg class="w-5 h-5 text-violet-500 mx-auto mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V7a3 3 0 013-3h10a3 3 0 013 3v1m-4 4l-4-4m0 0L8 12m4-4v12"/></svg>
+              <p class="text-[10px] font-black text-violet-600">رفع</p>
+              <p class="text-sm font-black text-slate-900 mt-0.5">{{ trafficStats.upload }}</p>
+            </div>
+            <div class="text-center p-3 rounded-xl bg-teal-50 border border-teal-100">
+              <svg class="w-5 h-5 text-teal-500 mx-auto mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              <p class="text-[10px] font-black text-teal-600">الإجمالي</p>
+              <p class="text-sm font-black text-slate-900 mt-0.5">{{ trafficStats.total }}</p>
+            </div>
+          </div>
+          <p v-if="trafficLoading" class="text-center text-xs text-slate-400 mt-3 font-bold animate-pulse">جارٍ تحميل بيانات الاستهلاك...</p>
+        </div>
+
+        <!-- بطاقة بيانات الحساب -->
+        <div class="rounded-2xl sm:rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+          <div class="p-4 sm:p-5 border-b border-slate-100">
+            <h3 class="text-sm font-black text-slate-900">بيانات الحساب</h3>
+          </div>
+          <div class="divide-y divide-slate-50">
+            <div class="flex items-center justify-between px-4 sm:px-5 py-3">
+              <span class="text-[11px] font-black text-slate-400">اسم المستخدم</span>
+              <span class="text-xs font-black text-slate-800 font-mono">{{ userData.username }}</span>
+            </div>
+            <div class="flex items-center justify-between px-4 sm:px-5 py-3">
+              <span class="text-[11px] font-black text-slate-400">البريد الإلكتروني</span>
+              <span class="text-xs font-bold text-slate-700 truncate max-w-[160px]">{{ userData.email || '—' }}</span>
+            </div>
+            <div class="flex items-center justify-between px-4 sm:px-5 py-3">
+              <span class="text-[11px] font-black text-slate-400">رقم الهاتف</span>
+              <span class="text-xs font-bold text-slate-700">{{ userData.phone || '—' }}</span>
+            </div>
+            <div class="flex items-center justify-between px-4 sm:px-5 py-3">
+              <span class="text-[11px] font-black text-slate-400">تاريخ التسجيل</span>
+              <span class="text-xs font-bold text-slate-700">{{ registeredDate }}</span>
+            </div>
+            <div class="flex items-center justify-between px-4 sm:px-5 py-3">
+              <span class="text-[11px] font-black text-slate-400">IP الثابت</span>
+              <span class="text-xs font-mono font-bold text-slate-700">{{ userData.static_ip || 'ديناميكي' }}</span>
+            </div>
           </div>
         </div>
-        <div class="p-5">
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" dir="rtl">
 
-            <!-- التحميل (Download = rx_mb) -->
-            <div class="bg-slate-50 rounded-2xl p-4 flex flex-col items-center justify-center text-center border border-slate-100 transition-all hover:bg-slate-100">
-              <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                <div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                </div>
-                التحميل
-              </div>
-              <div class="text-lg font-black text-slate-800" dir="ltr">{{ trafficStats.download }}</div>
+        <!-- أزرار العمليات -->
+        <div class="grid grid-cols-2 gap-3">
+          <button @click="openModal('redeem')"
+            class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-amber-200 hover:bg-amber-50/50 transition-all active:scale-95">
+            <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
             </div>
-
-            <!-- الرفع (Upload = tx_mb) -->
-            <div class="bg-slate-50 rounded-2xl p-4 flex flex-col items-center justify-center text-center border border-slate-100 transition-all hover:bg-slate-100">
-              <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                <div class="w-5 h-5 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
-                </div>
-                الرفع
-              </div>
-              <div class="text-lg font-black text-slate-800" dir="ltr">{{ trafficStats.upload }}</div>
+            <span class="text-xs font-black text-slate-700">شحن رصيد</span>
+          </button>
+          <button @click="openModal('activate')"
+            class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-indigo-200 hover:bg-indigo-50/50 transition-all active:scale-95">
+            <div class="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-
-            <!-- الإجمالي -->
-            <div class="bg-cyan-50 rounded-2xl p-4 flex flex-col items-center justify-center text-center border border-cyan-100 transition-all hover:bg-cyan-100">
-              <div class="text-[10px] font-black text-cyan-500 uppercase tracking-widest mb-1.5 flex items-center gap-1.5">
-                <div class="w-5 h-5 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                </div>
-                الإجمالي المستهلك
-              </div>
-              <div class="text-xl font-black text-cyan-700" dir="ltr">{{ trafficStats.total }}</div>
+            <span class="text-xs font-black text-slate-700">تفعيل الاشتراك</span>
+          </button>
+          <button @click="openModal('contract')"
+            class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-teal-200 hover:bg-teal-50/50 transition-all active:scale-95">
+            <div class="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             </div>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== الفواتير ===== -->
-      <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-        <div class="p-5 border-b border-slate-50 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-amber-500 flex items-center justify-center text-white flex-shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span class="text-xs font-black text-slate-700">عقد الاشتراك</span>
+          </button>
+          <button @click="loadData"
+            class="flex flex-col items-center gap-2 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-slate-300 transition-all active:scale-95">
+            <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             </div>
-            <div>
-              <h2 class="font-black text-slate-900 text-sm">الفواتير</h2>
-              <p class="text-xs text-slate-400 font-bold">سجل المدفوعات والمستحقات</p>
-            </div>
-          </div>
-          <button @click="loadInvoices" :disabled="invoicesLoading" class="text-xs font-black text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl transition-all disabled:opacity-50">
-            {{ invoicesLoading ? 'جارٍ...' : 'تحديث' }}
+            <span class="text-xs font-black text-slate-700">تحديث البيانات</span>
           </button>
         </div>
 
-        <!-- Skeleton Invoices -->
-        <div v-if="invoicesLoading" class="p-5 space-y-3">
-          <div v-for="i in 3" :key="i" class="h-16 bg-slate-100 rounded-2xl animate-pulse"></div>
-        </div>
-
-        <!-- قائمة الفواتير -->
-        <div v-else-if="invoices.length" class="divide-y divide-slate-50">
-          <div v-for="inv in invoices" :key="inv.id" class="p-4 sm:p-5 flex items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors">
-            <div class="flex items-center gap-3 min-w-0">
-              <div :class="inv.paid ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'" class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="inv.paid ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'"/></svg>
+        <!-- الفواتير -->
+        <div class="rounded-2xl sm:rounded-3xl bg-white border border-slate-100 shadow-sm overflow-hidden">
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-sm font-black text-slate-900">الفواتير الأخيرة</h3>
+            <span v-if="invoicesLoading" class="text-[10px] font-bold text-slate-400 animate-pulse">جارٍ التحميل...</span>
+          </div>
+          <div v-if="!invoicesLoading && invoices.length === 0" class="p-6 text-center">
+            <p class="text-xs font-bold text-slate-400">لا توجد فواتير</p>
+          </div>
+          <div v-else class="divide-y divide-slate-50">
+            <div v-for="inv in invoices.slice(0, 5)" :key="inv.id"
+              class="flex items-center justify-between px-4 sm:px-5 py-3">
+              <div>
+                <p class="text-xs font-black text-slate-800">#{{ inv.id }}</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-0.5">{{ formatDate(inv.created_at || inv.date) }}</p>
               </div>
-              <div class="min-w-0">
-                <div class="text-sm font-black text-slate-800 truncate"># {{ inv.invoice_number }}</div>
-                <div class="text-xs text-slate-400 font-bold">{{ formatDate(inv.created_at) }}</div>
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-black text-slate-700">{{ inv.total || inv.amount }} د.ل</span>
+                <span
+                  class="text-[9px] font-black px-2 py-0.5 rounded-full"
+                  :class="(inv.status === 'paid' || inv.paid) ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'"
+                >{{ (inv.status === 'paid' || inv.paid) ? 'مدفوعة' : 'معلقة' }}</span>
               </div>
             </div>
-            <div class="text-right flex-shrink-0">
-              <div class="text-sm font-black text-slate-900">LD {{ inv.amount }}</div>
-              <div :class="inv.paid ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'" class="text-[10px] font-black px-2 py-0.5 rounded-full mt-0.5">
-                {{ inv.paid ? 'مدفوعة' : 'غير مدفوعة' }}
+            <div v-if="invoices.length > 5" class="px-4 py-3 text-center">
+              <p class="text-[10px] font-bold text-slate-400">+{{ invoices.length - 5 }} فاتورة أخرى</p>
+            </div>
+          </div>
+        </div>
+
+      </template>
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- ===== Tab: الباقات المتاحة ========================== -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <template v-else-if="activeTab === 'packages'">
+
+        <!-- شارة الباقة الحالية -->
+        <div v-if="currentPackage" class="flex items-center gap-3 bg-white border border-indigo-200 rounded-2xl px-4 py-3 shadow-sm">
+          <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <div>
+            <div class="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-0.5">باقتك الحالية</div>
+            <div class="font-black text-indigo-700 text-sm">{{ currentPackage.name }}</div>
+            <div class="text-[9px] text-slate-400 font-bold mt-0.5">{{ currentPackage.speed_download }} Mbps · LD {{ currentPackage.price }}</div>
+          </div>
+        </div>
+
+        <!-- بدون باقات من API — نعرض الثابتة -->
+        <div v-if="packagesList.length === 0" class="text-center py-6">
+          <p class="text-xs font-bold text-slate-400">جارٍ تحميل الباقات...</p>
+        </div>
+
+        <!-- قائمة الباقات الديناميكية من API -->
+        <div v-else class="space-y-3">
+          <div
+            v-for="pkg in packagesList"
+            :key="pkg.id"
+            class="relative bg-white rounded-2xl border overflow-hidden transition-all duration-200"
+            :class="String(pkg.id) === String(userData.profile_id)
+              ? 'border-indigo-300 shadow-lg shadow-indigo-100/60 ring-2 ring-indigo-500/20'
+              : 'border-slate-100 shadow-sm hover:border-indigo-200 hover:shadow-md active:scale-[0.99]'"
+          >
+            <div class="h-1 w-full" :style="String(pkg.id) === String(userData.profile_id) ? 'background:linear-gradient(90deg,#6366f1,#06b6d4)' : 'background:linear-gradient(90deg,#e2e8f0,#cbd5e1)'"></div>
+
+            <!-- شارة الحالية -->
+            <div v-if="String(pkg.id) === String(userData.profile_id)" class="absolute top-3 left-3">
+              <span class="inline-flex items-center gap-1 text-[9px] font-black text-white px-2 py-1 rounded-full shadow" style="background:linear-gradient(135deg,#6366f1,#06b6d4);">
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                باقتك الحالية
+              </span>
+            </div>
+
+            <div class="p-4 sm:p-5 flex items-center justify-between gap-3" :class="String(pkg.id) === String(userData.profile_id) ? 'pt-8' : ''">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-sm font-black text-slate-900 leading-tight truncate">{{ pkg.name }}</h3>
+                <p v-if="pkg.down_limit" class="text-[10px] text-slate-400 font-medium mt-0.5">{{ pkg.down_limit }} MB حد شهري</p>
+              </div>
+
+              <!-- السعر + السرعة -->
+              <div class="flex items-center gap-4 flex-shrink-0">
+                <div class="text-center">
+                  <div class="flex items-baseline gap-0.5 justify-center">
+                    <span class="text-xl font-black text-slate-900">{{ pkg.speed_download || pkg.speed || '—' }}</span>
+                    <span class="text-[9px] font-black text-slate-400">M</span>
+                  </div>
+                  <p class="text-[8px] text-slate-400 font-bold">Mbps</p>
+                </div>
+                <div class="w-px h-8 bg-slate-100"></div>
+                <div class="text-center">
+                  <div class="flex items-baseline gap-0.5 justify-center">
+                    <span class="text-xl font-black" :class="String(pkg.id) === String(userData.profile_id) ? 'text-indigo-600' : 'text-slate-900'">{{ pkg.price }}</span>
+                    <span class="text-[9px] font-black text-slate-400">د.ل</span>
+                  </div>
+                  <p class="text-[8px] text-slate-400 font-bold">شهرياً</p>
+                </div>
+
+                <!-- زر التغيير -->
+                <button
+                  v-if="String(pkg.id) !== String(userData.profile_id)"
+                  @click="confirmPkgChange(pkg)"
+                  class="px-3 py-2 rounded-xl text-[10px] font-black text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 transition-all active:scale-95"
+                >
+                  اختر
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- لا فواتير -->
-        <div v-else class="p-8 text-center">
-          <div class="text-3xl mb-2">🧾</div>
-          <p class="text-slate-400 text-sm font-bold">لا توجد فواتير بعد</p>
+        <!-- بانر التواصل -->
+        <div class="relative overflow-hidden rounded-2xl p-5" style="background:linear-gradient(135deg,#1e1b4b 0%,#1e3a5f 100%);">
+          <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle,white 1px,transparent 1px);background-size:24px 24px;"></div>
+          <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="text-right">
+              <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">تريد مساعدة في اختيار الباقة؟</p>
+              <h3 class="text-base font-black text-white">تواصل مع فريق الدعم</h3>
+            </div>
+            <a href="https://wa.me/218923339798" target="_blank"
+              class="flex-shrink-0 inline-flex items-center gap-2 bg-white text-slate-900 text-xs font-black px-5 py-2.5 rounded-xl hover:bg-slate-50 transition-all hover:scale-105 shadow-xl shadow-black/20 active:scale-95">
+              <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              واتساب
+            </a>
+          </div>
         </div>
-      </div>
+
+      </template>
 
     </template>
 
-    <!-- ===== Modal: تعبئة الرصيد ===== -->
+    <!-- ===== Modal: تأكيد تغيير الباقة ===== -->
     <Transition name="modal-fade">
-      <div v-if="activeModal === 'redeem'" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" dir="rtl" @click.self="closeModal">
-        <div class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-
-          <!-- شريط علوي ملون -->
-          <div class="h-1.5 w-full rounded-t-2xl" style="background: linear-gradient(90deg, #2B32B2, #1488CC);"></div>
-
-          <!-- مقبض السحب -->
-          <div class="w-10 h-1 bg-slate-200 rounded-full mx-auto mt-3 mb-1"></div>
-
-          <div class="px-5 pt-4 pb-5 sm:p-7">
-            <!-- الهيدر -->
-            <div class="flex items-start justify-between mb-5">
-              <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-white shadow-md flex-shrink-0" style="background: linear-gradient(135deg, #6366f1, #06b6d4);">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                </div>
-                <div>
-                  <h3 class="text-lg font-black text-slate-900 leading-tight">تعبئة الرصيد</h3>
-                  <p class="text-slate-400 text-xs font-bold mt-0.5">أدخل رمز بطاقة الشحن</p>
-                </div>
-              </div>
-              <button @click="closeModal" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-500 bg-slate-100 hover:bg-red-50 rounded-xl transition-all flex-shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+      <div v-if="activeModal === 'pkg-confirm'" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" @click.self="activeModal = ''; selectedPkg = null">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden" @click.stop>
+          <div class="h-1.5 w-full" style="background: linear-gradient(90deg, #6366f1, #8b5cf6);"></div>
+          <div class="p-5 sm:p-6">
+            <h3 class="text-base font-black text-slate-900 mb-1">تأكيد تغيير الباقة</h3>
+            <p class="text-slate-400 text-xs font-medium mb-4">من <span class="font-black text-slate-600">{{ currentPackageName }}</span> إلى <span class="font-black text-indigo-600">{{ selectedPkg?.name }}</span></p>
+            <div class="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2.5 mb-5">
+              <svg class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <p class="text-[10px] font-bold text-amber-700">سيتم حذف الباقة الحالية فوراً وتفعيل الباقة الجديدة. هذا الإجراء لا يمكن التراجع عنه.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <button @click="activeModal = ''; selectedPkg = null" class="py-3 rounded-2xl font-black text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all active:scale-95">إلغاء</button>
+              <button @click="handlePkgChange" :disabled="pkgChangeLoading"
+                class="py-3 rounded-2xl font-black text-sm text-white shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-1.5"
+                style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                <svg v-if="pkgChangeLoading" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                {{ pkgChangeLoading ? 'جارٍ...' : 'تأكيد التغيير ✓' }}
               </button>
             </div>
-
-            <!-- رصيد حالي -->
-            <div class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 mb-5">
-              <span class="text-xs font-black text-slate-500">رصيدك الحالي</span>
-              <span class="text-sm font-black text-slate-800">LD {{ balanceData.balance }}</span>
-            </div>
-
-            <ModalFeedback :message="modalMsg" :success="modalSuccess" />
-
-            <!-- بطاقة إدخال مرئية -->
-            <form @submit.prevent="handleRedeem" class="space-y-4">
-              <div class="relative">
-
-                <input
-                  v-model="redeemPin"
-                  type="text"
-                  inputmode="numeric"
-                  pattern="[0-9]*"
-                  placeholder="أدخل رمز البطاقة (12 رقم)"
-                  maxlength="12"
-                  autocomplete="off"
-                  id="redeem-pin-input"
-                  @input="onPinInput"
-                  @keypress="blockNonDigit"
-                  @paste.prevent="onPinPaste"
-                  class="w-full text-center tracking-[0.3em] px-4 py-3.5 rounded-2xl border-2 transition-all font-black text-lg text-slate-800 bg-slate-50 focus:bg-white outline-none appearance-none"
-                  style="appearance: textfield; -moz-appearance: textfield;"
-                  :class="redeemPinError ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 focus:border-indigo-500'"
-                />
-                <!-- عداد الأرقام -->
-                <div class="flex items-center justify-between mt-1.5 px-1">
-                  <p v-if="redeemPinError" class="text-rose-500 text-xs font-bold">{{ redeemPinError }}</p>
-                  <p v-else class="text-slate-400 text-[10px] font-bold">البطاقة تتكون من 12 رقماً</p>
-                  <span class="text-[10px] font-black" :class="redeemPin.length === 12 ? 'text-emerald-500' : 'text-slate-400'">{{ redeemPin.length }}/12</span>
-                </div>
-              </div>
-
-              <!-- أزرار -->
-              <div class="grid grid-cols-2 gap-3">
-                <button type="button" @click="closeModal" class="py-3.5 rounded-2xl font-black text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all active:scale-95">
-                  إلغاء
-                </button>
-                <button type="submit" :disabled="modalLoading" class="py-3.5 rounded-2xl font-black text-sm text-white shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #6366f1, #06b6d4);">
-                  <svg v-if="modalLoading" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                  {{ modalLoading ? 'جارٍ...' : 'تأكيد التعبئة ✓' }}
-                </button>
-              </div>
-            </form>
           </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- ===== Modal: شحن رصيد ===== -->
+    <Transition name="modal-fade">
+      <div v-if="activeModal === 'redeem'" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" @click.self="closeModal">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden" @click.stop>
+          <div class="h-1.5 w-full" style="background: linear-gradient(135deg, #f59e0b, #d97706);"></div>
+          <form @submit.prevent="handleRedeem" class="p-5 sm:p-6">
+            <h3 class="text-base font-black text-slate-900 mb-1">شحن رصيد</h3>
+            <p class="text-slate-400 text-xs font-medium mb-4">أدخل رمز البطاقة المكوّن من 12 رقمًا</p>
+            <div class="mb-4">
+              <input
+                type="text"
+                inputmode="numeric"
+                :value="redeemPin"
+                @keydown="blockNonDigit"
+                @input="onPinInput"
+                @paste.prevent="onPinPaste"
+                placeholder="xxxx xxxx xxxx"
+                class="w-full px-4 py-3 rounded-2xl border text-center font-black text-lg tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-amber-300 transition-all"
+                :class="redeemPinError ? 'border-rose-300 bg-rose-50' : 'border-slate-200 bg-slate-50'"
+              />
+              <p v-if="redeemPinError" class="text-rose-500 text-xs font-bold mt-2 text-center">{{ redeemPinError }}</p>
+            </div>
+            <div v-if="modalMsg" class="mb-4 flex items-start gap-2 border rounded-2xl p-3 text-sm font-bold" :class="modalSuccess ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-rose-50 border-rose-200 text-rose-700'">
+              {{ modalMsg }}
+            </div>
+            <button type="submit" :disabled="modalLoading"
+              class="w-full py-4 text-white font-black rounded-2xl shadow-lg hover:scale-[1.01] transition-all disabled:opacity-70"
+              style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+              <span v-if="!modalLoading">شحن الرصيد</span>
+              <span v-else class="flex items-center justify-center gap-2"><svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>جارٍ التنفيذ...</span>
+            </button>
+          </form>
         </div>
       </div>
     </Transition>
 
     <!-- ===== Modal: تفعيل الاشتراك ===== -->
     <Transition name="modal-fade">
-      <div v-if="activeModal === 'activate'" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" dir="rtl" @click.self="closeModal">
-        <div class="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-          <!-- شريط علوي أخضر -->
-          <div class="h-1.5 w-full rounded-t-2xl" style="background: linear-gradient(135deg, #168A7D, #10B982);"></div>
-          <div class="p-7">
-            <!-- زر الإغلاق -->
-            <button @click="closeModal" class="absolute top-5 left-5 flex p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-xl transition-all border border-slate-100">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-            <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg mb-4" style="background: linear-gradient(135deg,#168A7D,#10B982);">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <h3 class="text-xl font-black text-slate-900 mb-1">تفعيل الاشتراك</h3>
-            <p class="text-slate-400 text-sm mb-4">سيتم خصم تكلفة الخدمة من رصيدك الحالي تلقائياً.</p>
-
-            <!-- مقارنة الرصيد والتكلفة -->
-            <div class="space-y-2 mb-5">
-              <div class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
-                <span class="text-xs font-black text-slate-500">رصيدك الحالي</span>
-                <span class="text-sm font-black text-slate-800">LD {{ balanceData.balance }}</span>
+      <div v-if="activeModal === 'activate'" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" @click.self="closeModal">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden" @click.stop>
+          <div class="h-1.5 w-full" style="background: linear-gradient(135deg, #6366f1, #06b6d4);"></div>
+          <div class="p-5 sm:p-6">
+            <h3 class="text-base font-black text-slate-900 mb-1">تفعيل الاشتراك</h3>
+            <p class="text-slate-400 text-xs font-medium mb-4">سيتم خصم قيمة الباقة من رصيدك الحالي.</p>
+            <div class="bg-slate-50 rounded-2xl p-4 mb-4 space-y-2 border border-slate-100">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-slate-500">الباقة</span>
+                <span class="text-xs font-black text-slate-800">{{ currentPackageName }}</span>
               </div>
-              <div class="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
-                <span class="text-xs font-black text-slate-500">تكلفة الاشتراك</span>
-                <span class="text-sm font-black text-indigo-700">{{ currentPackagePrice > 0 ? `LD ${currentPackagePrice}` : 'غير محدد' }}</span>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-slate-500">التكلفة</span>
+                <span class="text-xs font-black text-indigo-600">LD {{ currentPackagePrice }}</span>
               </div>
-              <div v-if="currentPackagePrice > 0 && Number(balanceData.balance) < currentPackagePrice" class="flex items-center gap-2 bg-rose-50 border border-rose-200 rounded-xl p-3">
-                <svg class="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="text-xs font-black text-rose-700">الرصيد غير كافٍ. يرجى تعبئة الرصيد أولاً.</span>
-              </div>
-              <div v-else-if="currentPackagePrice > 0" class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
-                <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="text-xs font-black text-emerald-700">الرصيد كافٍ للتفعيل ✓</span>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black text-slate-500">رصيدك</span>
+                <span class="text-xs font-black" :class="Number(balanceData.balance) >= currentPackagePrice ? 'text-emerald-600' : 'text-rose-600'">LD {{ Number(balanceData.balance).toFixed(2) }}</span>
               </div>
             </div>
-
-            <ModalFeedback :message="modalMsg" :success="modalSuccess" />
-
-            <div class="space-y-3">
-              <!-- ✅ زر التأكيد — يظهر دائماً ويتحقق من الرصيد عند الضغط -->
-              <form @submit.prevent="handleActivate">
-                <button
-                  type="submit"
-                  :disabled="modalLoading"
-                  id="btn-confirm-activate"
-                  class="w-full py-3.5 rounded-2xl font-black text-sm text-white shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
-                  style="background: linear-gradient(135deg, #168A7D, #10B982);"
-                >
-                  <svg v-if="modalLoading" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                  </svg>
-                  <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                  </svg>
-                  {{ modalLoading ? 'جارٍ التفعيل...' : 'تأكيد الاشتراك ✓' }}
-                </button>
-              </form>
-
-              <!-- زر شحن الرصيد يظهر كخيار دائم للمستخدم -->
-              <button
-                type="button"
-                @click="closeModal(); openModal('redeem')"
-                id="btn-goto-recharge"
-                class="w-full py-3.5 rounded-2xl font-black text-sm text-white shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
-                style="background: linear-gradient(135deg, #2B32B2, #1488CC);"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                </svg>
-                تعبئة الرصيد الآن
-              </button>
-
-              <button type="button" @click="closeModal" class="w-full py-3 rounded-2xl font-black text-sm text-slate-500 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 transition-all">
-                إلغاء
-              </button>
+            <div v-if="modalMsg" class="mb-4 flex items-start gap-2 border rounded-2xl p-3 text-sm font-bold" :class="modalSuccess ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-rose-50 border-rose-200 text-rose-700'">
+              {{ modalMsg }}
             </div>
-          </div>
-        </div>
-      </div>
-    </Transition>
-
-    <!-- ===== Modal: تحميل العقد ===== -->
-
-    <Transition name="modal-fade">
-      <div v-if="activeModal === 'contract'" class="fixed inset-0 z-[100] flex flex-col bg-slate-900/98 backdrop-blur-sm overflow-hidden" dir="rtl">
-
-        <!-- ─── شريط الأدوات العلوي ─── -->
-        <div class="flex-shrink-0 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-white/10" style="background: linear-gradient(135deg, #0c1220 0%, #1a2340 100%);">
-          <!-- معلومات واضحة -->
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg" style="background: linear-gradient(135deg, #2B32B2, #1488CC);">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </div>
-            <div>
-              <h3 class="font-black text-base sm:text-lg leading-tight" style="color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.4);">معاينة العقد</h3>
-              <p class="text-xs font-bold mt-0.5" style="color: #93c5fd;">عقد خدمة الإنترنت — التكامل نت</p>
-            </div>
-          </div>
-          <!-- أزرار -->
-          <div class="flex items-center gap-2 sm:gap-3">
-            <!-- تحميل PDF -->
-            <button
-              @click="downloadContract"
-              :disabled="modalLoading"
-              class="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-black text-xs sm:text-sm shadow-lg transition-all disabled:opacity-50 active:scale-95"
-              style="background: linear-gradient(135deg,#2B32B2,#1488CC); color:#fff;"
-            >
-              <svg v-if="!modalLoading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-              <svg v-else class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              <span>{{ modalLoading ? 'جارٍ...' : 'تحميل PDF' }}</span>
-            </button>
-            <!-- زر الإغلاق — أحمر بارز -->
-            <button
-              @click="closeModal"
-              class="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-black text-xs sm:text-sm transition-all active:scale-95 shadow-lg"
-              style="background: #dc2626; color:#fff; border: 2px solid #ef4444;"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
-              <span>إغلاق</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- ─── منطقة العقد بالتمرير — A4 مع تمرير أفقي إذا لزم ─── -->
-        <div class="flex-1 overflow-auto" style="background: #e2e8f0;">
-          <div class="min-h-full flex items-start justify-center p-4 sm:p-6">
-            <div id="contract-root" class="bg-white shadow-2xl" style="width: 210mm; min-height: 295mm;">
-              <ContractPdf :userData="userData" :balanceData="balanceData" />
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-    </Transition>
-
-    <!-- ===== Modal: تأكيد تغيير الباقة ===== -->
-    <Transition name="modal-fade">
-      <div v-if="activeModal === 'pkg-confirm'" class="fixed inset-0 z-[60] flex items-center justify-center p-4" dir="rtl">
-        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-md" @click="activeModal = ''"></div>
-        <div class="bg-white rounded-[2rem] w-full max-w-sm relative z-10 shadow-2xl overflow-hidden" style="box-shadow: 0 30px 80px -10px rgba(99,102,241,.3);">
-
-          <!-- شريط تحذيري -->
-          <div class="h-1.5 w-full" style="background: linear-gradient(90deg, #f59e0b, #ef4444);"></div>
-
-          <div class="p-6">
-            <!-- الأيقونة -->
-            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background: linear-gradient(135deg, #fef3c7, #fed7aa);">
-              <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-            </div>
-
-            <h3 class="text-lg font-black text-slate-900 text-center mb-1">تغيير الباقة</h3>
-            <p class="text-slate-500 text-xs text-center font-bold mb-5">تأكد من تفاصيل التغيير قبل التأكيد</p>
-
-            <!-- معلومات الباقتين -->
-            <div class="space-y-2.5 mb-5">
-              <!-- الحالية -->
-              <div class="flex items-center justify-between bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">
-                <div class="text-right">
-                  <div class="text-[9px] font-black text-rose-400 uppercase tracking-wider">الباقة الحالية — ستُحذف</div>
-                  <div class="text-sm font-black text-rose-700 mt-0.5">{{ currentPackageName }}</div>
-                </div>
-                <svg class="w-6 h-6 text-rose-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
-
-              <div class="flex items-center justify-center">
-                <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-              </div>
-
-              <!-- الجديدة -->
-              <div class="flex items-center justify-between bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3">
-                <div class="text-right">
-                  <div class="text-[9px] font-black text-indigo-400 uppercase tracking-wider">الباقة الجديدة — ستُفعّل</div>
-                  <div class="text-sm font-black text-indigo-700 mt-0.5">{{ selectedPkg?.name }}</div>
-                  <div class="text-[10px] text-indigo-400 font-bold mt-0.5">
-                    {{ selectedPkg?.speed_download && Number(selectedPkg.speed_download) > 0 ? selectedPkg.speed_download + ' Mbps' : '' }}
-                    {{ selectedPkg?.price ? ' · LD ' + selectedPkg.price : '' }}
-                  </div>
-                </div>
-                <svg class="w-6 h-6 text-indigo-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
-            </div>
-
-            <!-- تحذير -->
-            <div class="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl px-3 py-2.5 mb-5">
-              <svg class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-              <p class="text-[10px] font-bold text-amber-700">سيتم حذف الباقة الحالية فوراً وتفعيل الباقة الجديدة. هذا الإجراء لا يمكن التراجع عنه.</p>
-            </div>
-
-            <!-- أزرار -->
             <div class="grid grid-cols-2 gap-3">
-              <button
-                @click="activeModal = ''; selectedPkg = null"
-                class="py-3 rounded-2xl font-black text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all active:scale-95"
-              >إلغاء</button>
-              <button
-                @click="handlePkgChange"
-                :disabled="pkgChangeLoading"
+              <button @click="closeModal" class="py-3 rounded-2xl font-black text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all active:scale-95">إلغاء</button>
+              <button @click="handleActivate" :disabled="modalLoading"
                 class="py-3 rounded-2xl font-black text-sm text-white shadow-lg transition-all active:scale-95 disabled:opacity-70 flex items-center justify-center gap-1.5"
-                style="background: linear-gradient(135deg, #6366f1, #8b5cf6);"
-              >
-                <svg v-if="pkgChangeLoading" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                {{ pkgChangeLoading ? 'جارٍ...' : 'تأكيد التغيير ✓' }}
+                style="background: linear-gradient(135deg, #6366f1, #06b6d4);">
+                <svg v-if="modalLoading" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                {{ modalLoading ? 'جارٍ...' : 'تفعيل الاشتراك' }}
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- ===== Modal: عقد الاشتراك ===== -->
+    <Transition name="modal-fade">
+      <div v-if="activeModal === 'contract'" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="closeModal">
+        <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl" @click.stop>
+          <div class="sticky top-0 bg-white z-10 flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <h3 class="text-sm font-black text-slate-900">عقد الاشتراك</h3>
+            <div class="flex items-center gap-2">
+              <button @click="downloadContract" :disabled="modalLoading"
+                class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all disabled:opacity-60">
+                <svg v-if="!modalLoading" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <svg v-else class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                تحميل PDF
+              </button>
+              <button @click="closeModal" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- محتوى العقد -->
+          <div id="contract-root" class="p-6 sm:p-8 text-right" dir="rtl" style="font-family: 'Cairo', sans-serif; min-width: 600px;">
+            <div style="border-bottom: 3px solid #6366f1; padding-bottom: 24px; margin-bottom: 32px;">
+              <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                <img src="/images/logo/logo.png" alt="التكامل نت" style="height: 56px; width: 56px; object-fit: contain;" />
+                <div>
+                  <h1 style="font-size: 22px; font-weight: 900; color: #1e293b; margin: 0;">شركة التكامل نت</h1>
+                  <p style="font-size: 12px; color: #64748b; font-weight: 700; margin: 4px 0 0;">Altkamel Net — للاتصالات وتقنية المعلومات</p>
+                </div>
+              </div>
+              <h2 style="font-size: 18px; font-weight: 900; color: #6366f1; text-align: center; background: #f0f0ff; padding: 10px; border-radius: 10px; margin: 0;">
+                عقد تقديم خدمة الإنترنت
+              </h2>
+            </div>
+            <div style="margin-bottom: 24px; background: #f8fafc; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0;">
+              <h3 style="font-size: 14px; font-weight: 900; color: #1e293b; margin: 0 0 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">بيانات المشترك</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div><p style="font-size: 10px; color: #94a3b8; font-weight: 700; margin: 0 0 2px;">اسم المشترك</p><p style="font-size: 13px; font-weight: 900; color: #1e293b; margin: 0;">{{ displayName || userData?.username }}</p></div>
+                <div><p style="font-size: 10px; color: #94a3b8; font-weight: 700; margin: 0 0 2px;">اسم المستخدم</p><p style="font-size: 13px; font-weight: 900; color: #1e293b; margin: 0; font-family: monospace;">{{ userData?.username }}</p></div>
+                <div><p style="font-size: 10px; color: #94a3b8; font-weight: 700; margin: 0 0 2px;">البريد الإلكتروني</p><p style="font-size: 13px; font-weight: 700; color: #1e293b; margin: 0;">{{ userData?.email || '—' }}</p></div>
+                <div><p style="font-size: 10px; color: #94a3b8; font-weight: 700; margin: 0 0 2px;">رقم الهاتف</p><p style="font-size: 13px; font-weight: 700; color: #1e293b; margin: 0;">{{ userData?.phone || '—' }}</p></div>
+                <div><p style="font-size: 10px; color: #94a3b8; font-weight: 700; margin: 0 0 2px;">تاريخ الاشتراك</p><p style="font-size: 13px; font-weight: 700; color: #1e293b; margin: 0;">{{ registeredDate }}</p></div>
+                <div><p style="font-size: 10px; color: #94a3b8; font-weight: 700; margin: 0 0 2px;">رقم الحساب</p><p style="font-size: 13px; font-weight: 900; color: #6366f1; margin: 0; font-family: monospace;">#{{ userData?.id }}</p></div>
+              </div>
+            </div>
+            <div style="margin-bottom: 24px; background: #f0f0ff; border-radius: 12px; padding: 20px; border: 1px solid #c7d2fe;">
+              <h3 style="font-size: 14px; font-weight: 900; color: #4f46e5; margin: 0 0 12px;">تفاصيل الباقة</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div><p style="font-size: 10px; color: #818cf8; font-weight: 700; margin: 0 0 2px;">اسم الباقة</p><p style="font-size: 14px; font-weight: 900; color: #4f46e5; margin: 0;">{{ currentPackageName }}</p></div>
+                <div><p style="font-size: 10px; color: #818cf8; font-weight: 700; margin: 0 0 2px;">الرسوم الشهرية</p><p style="font-size: 14px; font-weight: 900; color: #4f46e5; margin: 0;">LD {{ currentPackagePrice }}</p></div>
+                <div><p style="font-size: 10px; color: #818cf8; font-weight: 700; margin: 0 0 2px;">الأيام المتبقية</p><p style="font-size: 14px; font-weight: 900; color: #4f46e5; margin: 0;">{{ balanceData.remaining_days }} يوم</p></div>
+                <div><p style="font-size: 10px; color: #818cf8; font-weight: 700; margin: 0 0 2px;">تاريخ انتهاء الباقة</p><p style="font-size: 14px; font-weight: 900; color: #4f46e5; margin: 0;">{{ expirationDate }}</p></div>
+              </div>
+            </div>
+            <div style="background: #fff7ed; border-radius: 12px; padding: 16px; border: 1px solid #fed7aa; margin-bottom: 24px;">
+              <h3 style="font-size: 13px; font-weight: 900; color: #c2410c; margin: 0 0 8px;">شروط الخدمة</h3>
+              <ul style="font-size: 11px; color: #9a3412; font-weight: 600; margin: 0; padding-right: 16px; line-height: 1.8;">
+                <li>يلتزم المشترك بسداد الرسوم الشهرية في موعدها المحدد.</li>
+                <li>تحتفظ الشركة بالحق في تعليق الخدمة عند التأخر في السداد.</li>
+                <li>يُمنع استخدام الخدمة في أي أغراض غير مشروعة.</li>
+                <li>تسري الخدمة من تاريخ التفعيل وتُجدَّد شهرياً.</li>
+              </ul>
+            </div>
+            <div style="text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+              <p style="margin: 0; font-weight: 700;">شركة التكامل نت — Altkamel Net | واتساب: 218923339798+</p>
+              <p style="margin: 4px 0 0; font-weight: 600;">تاريخ إنشاء الوثيقة: {{ new Date().toLocaleDateString('ar-LY') }}</p>
             </div>
           </div>
         </div>
@@ -839,7 +623,7 @@ const router = useRouter()
 const { getUserData, getBalance, getUserTraffic, getPackages, getInvoices, redeemCode, activateSubscription, toggleAutoRenew, changeSubscription } = useSas()
 const { getToken, clearSession, updateUser } = useAuth()
 
-// دالة تحويل MB → GB (محلية لتجنب مشاكل import في Nuxt)
+// دالة تحويل MB → GB (محلية)
 function mbToGb(mb) {
   if (mb === null || mb === undefined || mb === '') return null
   const val = Number(mb)
@@ -865,15 +649,22 @@ const invoicesLoading  = ref(false)
 const autoRenewLoading = ref(false)
 const pkgDropOpen      = ref(false)
 const pkgChangeLoading = ref(false)
-const selectedPkg      = ref(null)   // الباقة المختارة للتغيير
+const selectedPkg      = ref(null)
+const trafficLoading   = ref(false)
+
+// Tab state — الـ tab الافتراضي هو 'home'
+const activeTab = ref('home')
 
 // Modals
-const activeModal  = ref('')   // 'redeem' | 'activate' | 'contract' | 'pkg-confirm'
+const activeModal  = ref('')
 const modalLoading = ref(false)
 const modalMsg     = ref('')
 const modalSuccess = ref(false)
 const redeemPin    = ref('')
 const redeemPinError = ref('')
+
+// Traffic data منفصلة عن الـ loan
+const trafficData = ref({ rx_mb: null, tx_mb: null })
 
 // Toast
 const toasts = ref([])
@@ -945,11 +736,10 @@ const daysUrgency = computed(() => {
 // ─── Computed: بيانات الاستهلاك بالـ GB ──────────────────────────────────────
 const trafficStats = computed(() => {
   const loan = balanceData.value.loan || {}
-
-  // نفضّل بيانات loan من الـ Dashboard
-  const rxMb  = loan.rx_mb  ?? null
-  const txMb  = loan.tx_mb  ?? null
-  const totMb = loan.rxtx_mb ?? (rxMb !== null && txMb !== null ? rxMb + txMb : null)
+  // نفضّل بيانات Traffic API على بيانات loan
+  const rxMb  = trafficData.value.rx_mb  ?? loan.rx_mb  ?? null
+  const txMb  = trafficData.value.tx_mb  ?? loan.tx_mb  ?? null
+  const totMb = (rxMb !== null && txMb !== null) ? rxMb + txMb : (loan.rxtx_mb ?? null)
 
   const fmt = (mb) => {
     const gb = mbToGb(mb)
@@ -970,14 +760,12 @@ async function loadData() {
   const token = getToken()
   if (!token) { router.replace('/portal/login'); return }
 
-  // نُشغّل الطلبات الثلاث بالتوازي
   const [userRes, balRes, pkgRes] = await Promise.all([
     getUserData(token),
     getBalance(token),
     getPackages(token),
   ])
 
-  // التحقق من انتهاء الجلسة
   if (userRes?.expired || balRes?.expired) {
     clearSession()
     router.replace('/portal/login')
@@ -997,8 +785,9 @@ async function loadData() {
 
   isLoading.value = false
 
-  // جلب الفواتير بشكل منفصل لتسريع عرض الصفحة
+  // جلب الفواتير والترافيك بعد رسم الصفحة
   loadInvoices()
+  loadTraffic()
 }
 
 async function loadInvoices() {
@@ -1008,6 +797,25 @@ async function loadInvoices() {
   const res = await getInvoices(token)
   if (res?.invoices) invoices.value = res.invoices
   invoicesLoading.value = false
+}
+
+async function loadTraffic() {
+  trafficLoading.value = true
+  const token = getToken()
+  if (!token) return
+  try {
+    const now = new Date()
+    const res = await getUserTraffic(token, now.getMonth() + 1, now.getFullYear())
+    if (res?.data) {
+      trafficData.value = {
+        rx_mb: res.data.rx_mb,
+        tx_mb: res.data.tx_mb,
+      }
+    }
+  } catch {
+    // Traffic not available — keep zeros
+  }
+  trafficLoading.value = false
 }
 
 // ─── modal helpers ────────────────────────────────────────────────────────────
@@ -1024,7 +832,6 @@ function closeModal() { activeModal.value = '' }
 
 // ─── فتح modal تأكيد تغيير الباقة ──────────────────────────────────────────────
 function confirmPkgChange(pkg) {
-  // لو الباقة هي نفس الحالية نتجاهل
   if (String(pkg.id) === String(userData.value?.profile_id)) {
     pkgDropOpen.value = false
     showToast('أنت تستخدم هذه الباقة حالياً.', 'warning')
@@ -1044,14 +851,12 @@ async function handlePkgChange() {
   pkgChangeLoading.value = false
 
   if (res?.success) {
-    // تحديث فوري في الواجهة
     const newPkgId = String(selectedPkg.value.id)
     const newPkgName = selectedPkg.value.name
     userData.value = { ...userData.value, profile_id: newPkgId }
     activeModal.value = ''
     selectedPkg.value = null
     showToast(`تم التغيير إلى ${newPkgName} بنجاح ✓`, 'success', 5000)
-    // إعادة جلب البيانات كاملة من السيرفر للمزامنة الكاملة
     setTimeout(() => loadData(), 1500)
   } else if (res?.expired) {
     clearSession()
@@ -1067,7 +872,6 @@ async function handleAutoRenewToggle() {
   if (!userData.value) return
   const enabling = !userData.value.auto_renew
 
-  // إذا أراد التفعيل → تحقق من الرصيد
   if (enabling && currentPackagePrice.value > 0) {
     const balance = Number(balanceData.value.balance)
     if (balance < currentPackagePrice.value) {
@@ -1081,11 +885,8 @@ async function handleAutoRenewToggle() {
   }
 
   autoRenewLoading.value = true
-  // نحفظ الحالة السابقة للرجوع إليها عند الفشل
   const previousValue = userData.value.auto_renew
   const token = getToken()
-
-  // تحديث فوري في الواجهة (Optimistic UI)
   userData.value = { ...userData.value, auto_renew: enabling ? 1 : 0 }
 
   const res = await toggleAutoRenew(token, enabling)
@@ -1095,31 +896,26 @@ async function handleAutoRenewToggle() {
     updateUser({ auto_renew: enabling ? 1 : 0 })
     showToast(res.message, 'success')
   } else if (res.expired) {
-    // ارجع الحالة ثم انتقل للدخول
     userData.value = { ...userData.value, auto_renew: previousValue }
     clearSession()
     router.replace('/portal/login')
   } else {
-    // ارجع الـ toggle للحالة السابقة عند الفشل
     userData.value = { ...userData.value, auto_renew: previousValue }
     showToast(res.error || 'عذراً، حدث خطأ أثناء تغيير حالة التجديد التلقائي أو لا تملك صلاحية لذلك.', 'error')
   }
 }
 
-// ─── تعبئة رصيد — دوال مساعدة ────────────────────────────────────────────────
-// يمنع إدخال أي حرف غير رقم
+// ─── شحن رصيد ────────────────────────────────────────────────────────────────
 function blockNonDigit(e) {
   if (!/[0-9]/.test(e.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'].includes(e.key)) {
     e.preventDefault()
   }
 }
-// ينظف القيمة عند الكتابة
 function onPinInput(e) {
   redeemPin.value = e.target.value.replace(/\D/g, '').slice(0, 12)
   e.target.value  = redeemPin.value
   redeemPinError.value = ''
 }
-// يتحكم في اللصق
 function onPinPaste(e) {
   const text   = (e.clipboardData || window.clipboardData).getData('text')
   const digits = text.replace(/\D/g, '').slice(0, 12)
@@ -1135,11 +931,9 @@ function validatePin(pin) {
 }
 
 async function handleRedeem() {
-  // تفريغ الخطأ السابق
   redeemPinError.value = ''
   modalMsg.value       = ''
 
-  // التحقق من صحة الرمز محلياً
   const clean = (redeemPin.value || '').replace(/\D/g, '')
   const validationError = validatePin(clean)
   if (validationError) {
@@ -1158,7 +952,6 @@ async function handleRedeem() {
   if (res.success) {
     redeemPin.value = ''
     showToast(res.message, 'success', 5000)
-    // تحديث الرصيد فوراً
     const balRes = await getBalance(token)
     if (balRes?.data) balanceData.value = { ...balanceData.value, ...balRes.data }
   } else if (res.expired) {
@@ -1171,7 +964,6 @@ async function handleRedeem() {
 
 // ─── تفعيل الاشتراك ───────────────────────────────────────────────────────────
 async function handleActivate() {
-  // تحقق من الرصيد قبل إرسال الطلب
   if (currentPackagePrice.value > 0 && Number(balanceData.value.balance) < currentPackagePrice.value) {
     modalMsg.value    = 'الرصيد غير كافٍ. يرجى تعبئة الرصيد أولاً.'
     modalSuccess.value = false
@@ -1188,7 +980,6 @@ async function handleActivate() {
 
   if (res.success) {
     showToast(res.message, 'success')
-    // تحديث كامل للبيانات بعد التفعيل
     await loadData()
     closeModal()
   } else if (res.expired) {
@@ -1225,83 +1016,45 @@ async function downloadContract() {
       pagebreak: { mode: ['css', 'legacy'] },
     }
 
-    // كشف بيئة الأندرويد: isNativePlatform أو userAgent
-    const isAndroid = Capacitor.isNativePlatform() ||
-      /android/i.test(navigator.userAgent)
+    const isAndroid = Capacitor.isNativePlatform() || /android/i.test(navigator.userAgent)
 
     if (isAndroid) {
-      // ─── نسخة الأندرويد ───────────────────────────────────────────
       showToast('جاري تجهيز العقد...', 'warning', 10000)
-
-      // 1) توليد PDF كـ Blob
       let pdfBlob
       try {
         pdfBlob = await html2pdf().set(opt).from(element).outputPdf('blob')
       } catch (genErr) {
-        console.error('[PDF] خطأ أثناء التوليد:', genErr)
         throw new Error('تعذّر توليد ملف PDF. يرجى المحاولة لاحقاً.')
       }
-
-      if (!pdfBlob || pdfBlob.size === 0) {
-        throw new Error('ملف PDF فارغ. يرجى المحاولة مجدداً.')
-      }
-
-      // 2) Blob → Base64
+      if (!pdfBlob || pdfBlob.size === 0) throw new Error('ملف PDF فارغ. يرجى المحاولة مجدداً.')
       const base64DataOnly = await new Promise((resolve, reject) => {
         const reader = new FileReader()
-        reader.onloadend = () => {
-          const result = reader.result
-          if (result) {
-            resolve(result.split(',')[1])
-          } else {
-            reject(new Error('فشل قراءة الملف.'))
-          }
-        }
+        reader.onloadend = () => { if (reader.result) resolve(reader.result.split(',')[1]); else reject(new Error('فشل قراءة الملف.')) }
         reader.onerror = () => reject(new Error('خطأ أثناء قراءة الملف.'))
         reader.readAsDataURL(pdfBlob)
       })
-
-      // 3) حفظ في Cache
       let savedFile
       try {
-        savedFile = await Filesystem.writeFile({
-          path: filename,
-          data: base64DataOnly,
-          directory: Directory.Cache,
-        })
+        savedFile = await Filesystem.writeFile({ path: filename, data: base64DataOnly, directory: Directory.Cache })
       } catch (fsErr) {
-        console.error('[PDF] خطأ حفظ الملف:', fsErr)
         throw new Error('تعذّر حفظ الملف على الجهاز. تحقق من أذونات التخزين.')
       }
-
-      // 4) مشاركة عبر نافذة النظام
       try {
-        await Share.share({
-          title: 'عقد الاشتراك — التكامل نت',
-          url: savedFile.uri,
-          dialogTitle: 'حفظ أو فتح عقد الاشتراك',
-        })
+        await Share.share({ title: 'عقد الاشتراك — التكامل نت', url: savedFile.uri, dialogTitle: 'حفظ أو فتح عقد الاشتراك' })
         showToast('تم تجهيز العقد! اختر تطبيقاً لحفظه.', 'success', 4000)
       } catch (shareErr) {
-        // المستخدم أغلق نافذة المشاركة — ليس خطأ
-        console.log('[PDF] أُغلقت نافذة المشاركة:', shareErr?.message)
         showToast('تم حفظ الملف في ذاكرة الجهاز.', 'success', 3000)
       }
-
     } else {
-      // ─── نسخة المتصفح العادي ──────────────────────────────────────
       await html2pdf().set(opt).from(element).save()
       showToast('تم تحميل العقد بنجاح! ✓', 'success', 4000)
     }
-
   } catch (error) {
-    console.error('[PDF] خطأ عام:', error)
     showToast(error?.message || 'حدث خطأ أثناء معالجة العقد. يرجى المحاولة لاحقاً.', 'error', 6000)
   } finally {
     modalLoading.value = false
   }
 }
-
 
 // ─── تنسيق التاريخ ───────────────────────────────────────────────────────────
 function formatDate(dateStr) {
@@ -1314,50 +1067,7 @@ onMounted(loadData)
 
 <!-- ─── مكوّنات محلية مدمجة ─── -->
 <script>
-// ModalFeedback — رسالة نجاح/فشل داخل الـ Modal
-const ModalFeedback = {
-  props: ['message', 'success'],
-  template: `
-    <Transition name="fade">
-      <div v-if="message" :class="success ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-rose-50 border-rose-200 text-rose-700'"
-        class="mb-4 flex items-start gap-2 border rounded-2xl p-3 text-sm font-bold">
-        <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="success ? 'M5 13l4 4L19 7' : 'M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'"/>
-        </svg>
-        {{ message }}
-      </div>
-    </Transition>
-  `
-}
-
-// ModalBtn — زر submit موحّد مع حالة تحميل
-const ModalBtn = {
-  props: { loading: Boolean, label: String, color: { default: 'indigo' } },
-  computed: {
-    gradient() {
-      const map = {
-        indigo:  'linear-gradient(135deg,#6366f1,#06b6d4)',
-        emerald: 'linear-gradient(135deg,#10b981,#059669)',
-        rose:    'linear-gradient(135deg,#f43f5e,#e11d48)'
-      }
-      return map[this.color] || map.indigo
-    }
-  },
-  template: `
-    <button type="submit" :disabled="loading" :style="'background:' + gradient"
-      class="w-full py-4 text-white font-black rounded-2xl shadow-lg hover:scale-[1.01] transition-all disabled:opacity-70">
-      <span v-if="!loading">{{ label }}</span>
-      <span v-else class="flex items-center justify-center gap-2">
-        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-        جارٍ التنفيذ...
-      </span>
-    </button>
-  `
-}
-
-export default {
-  components: { ModalFeedback, ModalBtn }
-}
+export default {}
 </script>
 
 <style scoped>
@@ -1379,13 +1089,4 @@ export default {
 .drop-fade-enter-active { transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .drop-fade-leave-active { transition: all 0.15s ease; }
 .drop-fade-enter-from, .drop-fade-leave-to { opacity: 0; transform: translateY(-8px) scaleY(0.95); transform-origin: top; }
-
-/* Contract scale للموبايل */
-@media (max-width: 767px) {
-  .contract-mobile-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 12px;
-  }
-}
 </style>
