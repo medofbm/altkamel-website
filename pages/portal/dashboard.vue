@@ -1043,13 +1043,16 @@ async function handlePkgChange() {
   const res = await changeSubscription(token, selectedPkg.value.id)
   pkgChangeLoading.value = false
 
-  if (res?.success || res?._httpStatus === 200 || res?.message === 'rsp_service_change_success') {
-    // تحديث البيانات فوراً
-    const newPkgId = selectedPkg.value.id
-    userData.value = { ...userData.value, profile_id: String(newPkgId) }
-    showToast(`تم التغيير إلى ${selectedPkg.value.name} بنجاح ✓`, 'success', 5000)
+  if (res?.success) {
+    // تحديث فوري في الواجهة
+    const newPkgId = String(selectedPkg.value.id)
+    const newPkgName = selectedPkg.value.name
+    userData.value = { ...userData.value, profile_id: newPkgId }
     activeModal.value = ''
     selectedPkg.value = null
+    showToast(`تم التغيير إلى ${newPkgName} بنجاح ✓`, 'success', 5000)
+    // إعادة جلب البيانات كاملة من السيرفر للمزامنة الكاملة
+    setTimeout(() => loadData(), 1500)
   } else if (res?.expired) {
     clearSession()
     router.replace('/portal/login')

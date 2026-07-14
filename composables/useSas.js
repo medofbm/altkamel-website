@@ -145,9 +145,28 @@ export function useSas() {
 
   async function changeSubscription(token, newServiceId) {
     const body = { new_service: String(newServiceId), current_password: true }
-    const result = await sasRequest('/service', { method: 'POST', body, token })
-    if (result?._httpStatus === 200) return { success: true, message: MSG.change_sub_success }
-    if (result?._httpStatus === 401) return { error: MSG.session_expired, expired: true }
+    let result
+    try {
+      result = await sasRequest('/service', { method: 'POST', body, token })
+    } catch {
+      return { error: MSG.change_sub_error || 'فشل تغيير الباقة. تحقق من الاتصال.' }
+    }
+    console.log('[SAS changeSubscription] Response:', JSON.stringify(result))
+    if (result?._httpStatus === 401 || result?.message === 'rsp_unauthenticated')
+      return { error: MSG.session_expired, expired: true }
+    // نجاح: رسالة صريحة من السيرفر
+    if (result?.message === 'rsp_service_change_success')
+      return { success: true, message: MSG.change_sub_success || 'تم تغيير الباقة بنجاح ✓' }
+    // نجاح: status 200 في الـ body
+    if (result?.status === 200 && result?._httpStatus === 200)
+      return { success: true, message: MSG.change_sub_success || 'تم تغيير الباقة بنجاح ✓' }
+    // نجاح: HTTP 200 مع body فارغ أو بدون message محدد
+    if (result?._httpStatus === 200 && !result?.error && !result?.message)
+      return { success: true, message: MSG.change_sub_success || 'تم تغيير الباقة بنجاح ✓' }
+    // نجاح: HTTP 200 مع أي message إيجابية
+    if (result?._httpStatus === 200 && typeof result?.message === 'string' && !result?.message?.startsWith('rsp_error') && !result?.message?.startsWith('err_'))
+      return { success: true, message: MSG.change_sub_success || 'تم تغيير الباقة بنجاح ✓' }
+    // فشل
     return { error: translateError(result, 'change_sub_error') }
   }
 

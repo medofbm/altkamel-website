@@ -227,7 +227,7 @@ const handleLogin = async () => {
 
   // نجح الدخول — احفظ الـ token وانتقل للداشبورد
   saveSession(result.token, { username: username.value.trim() })
-  router.push('/portal/dashboard')
+  router.replace('/portal/dashboard')
 }
 </script>
 
