@@ -112,11 +112,26 @@ export function useSas() {
 
   async function getUserTraffic(token) {
     try {
-      const result = await sasRequest('/user/traffic', { token })
-      if (result?.data) {
-        return { data: { rx_mb: result.data.rx_mb ?? result.data.download ?? null, tx_mb: result.data.tx_mb ?? result.data.upload ?? null } }
+      const now   = new Date()
+      const today = now.getDate() - 1 // API array is 0-indexed: day 1 → index 0
+      const body  = {
+        report_type: 'daily',
+        month: now.getMonth() + 1,
+        year:  now.getFullYear(),
+        user_id: null,
       }
-    } catch { /* endpoint not available */ }
+      const result = await sasRequest('/traffic', { method: 'POST', body, token })
+      console.log('[SAS Traffic] raw response:', JSON.stringify(result?.data ? { rx_len: result.data.rx?.length, tx_len: result.data.tx?.length, today_idx: today, rx_today: result.data.rx?.[today], tx_today: result.data.tx?.[today] } : result))
+      if (result?.data) {
+        const d = result.data
+        // نأخذ فقط قيمة اليوم الحالي من الـ array (كل قيمة بالـ MB)
+        const rxMb = Array.isArray(d.rx) && d.rx[today] != null ? Number(d.rx[today]) : null
+        const txMb = Array.isArray(d.tx) && d.tx[today] != null ? Number(d.tx[today]) : null
+        return { data: { rx_mb: rxMb, tx_mb: txMb } }
+      }
+    } catch (e) {
+      console.warn('[SAS Traffic] endpoint error:', e)
+    }
     return { data: null }
   }
 

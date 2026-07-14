@@ -866,6 +866,8 @@ const autoRenewLoading = ref(false)
 const pkgDropOpen      = ref(false)
 const pkgChangeLoading = ref(false)
 const selectedPkg      = ref(null)   // الباقة المختارة للتغيير
+const trafficToday     = ref({ rx_mb: null, tx_mb: null })  // استهلاك اليوم الحالي
+const trafficLoading   = ref(false)
 
 // Modals
 const activeModal  = ref('')   // 'redeem' | 'activate' | 'contract' | 'pkg-confirm'
@@ -942,14 +944,12 @@ const daysUrgency = computed(() => {
   return           { badge: 'bg-teal-100 text-teal-600',   bar: 'bg-gradient-to-l from-teal-400 to-teal-500', text: 'جيد' }
 })
 
-// ─── Computed: بيانات الاستهلاك بالـ GB ──────────────────────────────────────
+// ─── Computed: بيانات الاستهلاك بالـ GB (اليوم الحالي) ──────────────────────────
 const trafficStats = computed(() => {
-  const loan = balanceData.value.loan || {}
-
-  // نفضّل بيانات loan من الـ Dashboard
-  const rxMb  = loan.rx_mb  ?? null
-  const txMb  = loan.tx_mb  ?? null
-  const totMb = loan.rxtx_mb ?? (rxMb !== null && txMb !== null ? rxMb + txMb : null)
+  // نفضّل بيانات Traffic API (اليوم) على بيانات loan
+  const rxMb  = trafficToday.value.rx_mb
+  const txMb  = trafficToday.value.tx_mb
+  const totMb = (rxMb !== null && txMb !== null) ? rxMb + txMb : null
 
   const fmt = (mb) => {
     const gb = mbToGb(mb)
@@ -997,8 +997,9 @@ async function loadData() {
 
   isLoading.value = false
 
-  // جلب الفواتير بشكل منفصل لتسريع عرض الصفحة
+  // جلب الفواتير والترافيك بشكل منفصل لتسريع عرض الصفحة
   loadInvoices()
+  loadTraffic()
 }
 
 async function loadInvoices() {
@@ -1008,6 +1009,22 @@ async function loadInvoices() {
   const res = await getInvoices(token)
   if (res?.invoices) invoices.value = res.invoices
   invoicesLoading.value = false
+}
+
+// ─── جلب استهلاك اليوم من traffic API ─────────────────────────────────────────
+async function loadTraffic() {
+  trafficLoading.value = true
+  const token = getToken()
+  if (!token) return
+  try {
+    const res = await getUserTraffic(token)
+    if (res?.data?.rx_mb !== null && res?.data !== null) {
+      trafficToday.value = { rx_mb: res.data.rx_mb, tx_mb: res.data.tx_mb }
+    }
+  } catch (e) {
+    console.warn('[Traffic] failed:', e)
+  }
+  trafficLoading.value = false
 }
 
 // ─── modal helpers ────────────────────────────────────────────────────────────
