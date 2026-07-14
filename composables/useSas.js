@@ -124,9 +124,10 @@ export function useSas() {
       console.log('[SAS Traffic] raw response:', JSON.stringify(result?.data ? { rx_len: result.data.rx?.length, tx_len: result.data.tx?.length, today_idx: today, rx_today: result.data.rx?.[today], tx_today: result.data.tx?.[today] } : result))
       if (result?.data) {
         const d = result.data
-        // نأخذ فقط قيمة اليوم الحالي من الـ array (كل قيمة بالـ MB)
-        const rxMb = Array.isArray(d.rx) && d.rx[today] != null ? Number(d.rx[today]) : null
-        const txMb = Array.isArray(d.tx) && d.tx[today] != null ? Number(d.tx[today]) : null
+        // القيم الراجعة من SAS تكون بالبايت (Bytes)
+        // نقوم بتحويلها إلى ميجابايت (MB) بقسمتها على 1024 * 1024
+        const rxMb = Array.isArray(d.rx) && d.rx[today] != null ? Number(d.rx[today]) / (1024 * 1024) : null
+        const txMb = Array.isArray(d.tx) && d.tx[today] != null ? Number(d.tx[today]) / (1024 * 1024) : null
         return { data: { rx_mb: rxMb, tx_mb: txMb } }
       }
     } catch (e) {
